@@ -3,10 +3,13 @@
   "title": "jQuery Circular",
   "description": "A dead-simple, modern carousel library.",
   "keywords": [
+    "ui",
+    "animation",
     "carousel",
+    "slider",
+    "slideshow",
     "deferred",
-    "promise",
-    "timing"
+    "responsive"
   ],
   "version": "0.0.1",
   "author": {
