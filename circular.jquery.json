@@ -11,7 +11,7 @@
     "deferred",
     "responsive"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Jean-Denis Vauguet",
     "email": "jd@vauguet.fr",
@@ -34,6 +34,6 @@
   "homepage": "https://github.com/chikamichi/jquery.circular",
   "docs": "https://github.com/chikamichi/jquery.circular",
   "dependencies": {
-    "jquery": ">=2.0"
+    "jquery": ">=1.9.0"
   }
 }

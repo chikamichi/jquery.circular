@@ -1,0 +1,13 @@
+{
+  "name": "jquery.circular",
+  "version": "0.0.2",
+  "main": "jquery.circular.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "jquery": "1.9.0"
+  }
+}
