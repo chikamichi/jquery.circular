@@ -46,12 +46,13 @@ About this plugin
 
 * Fire a shitload of events and be overall complicated
 * Make unfair assumptions about your DOM tree
-* Use a convention over configuration approach, but remain fully tweakable
+* Be uncool
 
 ### What it is trying to do
 
 * [KISS](http://en.wikipedia.org/wiki/KISS_principle)
 * Simple code so that one can hack on
+* Use a convention over configuration approach, but remain fully tweakable
 * Modern patterns ([proper jQuery Plugin's API](http://kaibun.net/blog/2013/04/19/a-fully-fledged-coffeescript-boilerplate-for-jquery-plugins/),
   Deferred-based architecture…)
 
