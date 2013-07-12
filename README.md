@@ -44,9 +44,13 @@ About this plugin
 
 ### What it is trying *not* to do
 
-* Fire a shitload of events and be overall complicated
 * Make unfair assumptions about your DOM tree
-* Be uncool
+* Be overall complicated
+* Provide styles
+
+By "trying", I mean those are my goals. For instance, it *does* make some
+unfair assumptions about your DOM tree at the moment, but I am working on
+it (see "Maybe one day?" below).
 
 ### What it is trying to do
 
@@ -59,9 +63,11 @@ About this plugin
 ### Maybe one day?
 
 * A *small* range of events (started, next, selected, stopped)
+* Allow the slides and the controls to be anywhere in the DOM (fully
+  data-\* based)
 * Some hooks (beforeStart, beforeStop, things like that) because hooks are
-  sweet
-* A demo page with examples and a nice design
+  sweet. Those could be events.
+* A demo page with examples and a nice design!
 
 License
 -------
