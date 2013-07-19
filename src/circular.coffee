@@ -1,7 +1,7 @@
 ###
-jQuery Circular Plugin v0.2
+jQuery Circular Plugin v0.3
 
-Release: 06/07/2013
+Release: 19/07/2013
 Author: Jean-Denis Vauguet <jd@vauguet.fr>
 
 http://github.com/chikamichi/jquery.circular
@@ -19,6 +19,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
   _current = _settings.startingPoint
   _slides = null
+  _controls = null
   _nbSlides = null
   _interval = null
 
@@ -28,6 +29,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       $this = $(@)
       $.extend _settings, (options or {})
       _slides = $(_settings.a_slide, $this)
+      _controls = $(_settings.a_ctl, $this)
       _nbSlides = _slides.size()
 
       # Let's go…
@@ -44,15 +46,34 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
       return $this
 
+    # Returns the current slide's DOM element.
+    currentSlide: ->
+      $(_slides[_current])
+
+    # Returns the current slide's control (DOM element).
+    currentControl: ->
+      $(_controls[_current])
+
+    # Returns an object with slide and control properties for the current
+    # slide.
+    current: ->
+      slide: methods.currentSlide()
+      control: methods.currentControl()
+
+    # Bind events to this handler to gain support for custom interactions.
+    jumpTo: (event, id = null) ->
+      id = $(event.currentTarget).data('id') unless id
+      _internals.jumpTo(id)
+
   # Private API.
   _internals =
     # Set proper CSS classes on unactive/active slides and controls.
     setActiveSlide: ->
-      id = _current + 1
-      $(_settings.a_ctl, $this).removeClass('active')
-      $(_settings.a_ctl + "[data-id=#{id}]", $this).addClass('active')
-      $(_settings.a_slide, $this).removeClass('active')
-      $(_settings.a_slide + "[data-id=#{id}]", $this).addClass('active')
+      _controls.removeClass('active')
+      methods.currentControl().addClass('active')
+      _slides.removeClass('active')
+      methods.currentSlide().addClass('active')
+      $this.trigger('circular:selected', methods.current(), $this)
 
     next: ->
       if _current + 1 < _nbSlides
@@ -64,28 +85,36 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     #
     # Call this to reinit the carousel from the current starting point.
     start: ->
-      setInterval(->
-        faded = $(_slides[_current]).fadeOut(_settings.transitionDelay)
-                                    .promise()
-        _current = _internals.next()
-        faded.done ->
-          _internals.setActiveSlide()
-          $(_slides[_current]).fadeIn(_settings.transitionDelay)
+      setInterval(_internals.transitionTo
       , _settings.transitionDelay + _settings.displayDuration)
 
-    # Listen for events such as clicking on a control.
+    # TODO: refactor this so that it is possible to provide a custom
+    # transition effect/logic.
+    transitionTo: (delay = _settings.transitionDelay, to = null) ->
+      prevSlide = methods.current()
+      # FIXME: this assumes the controls are within the slides.
+      faded = prevSlide.slide.fadeOut(delay).promise()
+
+      _current = if to != null then to else _internals.next()
+      nextSlide = methods.current()
+
+      $this.trigger('circular:fading', prevSlide, nextSlide, $this)
+
+      faded.done ->
+        _internals.setActiveSlide()
+        nextSlide.slide.fadeIn(delay)
+        $this.trigger('circular:faded', nextSlide, prevSlide, $this)
+
     bindEvents: ->
       # React upon a control being clicked: switch to its matching slide, reset
       # the loop.
-      $(_settings.a_ctl, $this).click (e) ->
-        selected = $(@).data("id") - 1
-        window.clearInterval(_interval)
-        $(_slides[_current]).hide()
-        _current = selected
-        _internals.setActiveSlide()
-        $(_slides[selected]).show()
-        _interval = _internals.start()
-        return false
+      $(_settings.a_ctl, $this).click methods.jumpTo
+
+    jumpTo: (id) ->
+      window.clearInterval(_interval)
+      _internals.transitionTo(0, id)
+      _interval = _internals.start()
+      return false
 
   $.fn.circular = (method) ->
     if methods[method]
