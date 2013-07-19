@@ -126,7 +126,7 @@ $('.wannabe-carousel').circular('current')
 
 ### jumpTo
 
-* arguments: `event, [id]`
+* arguments: `event[, id]`
 
 This is an event handler implementing the business logic involved when jumping
 to a slide. By default, it relies on a default implementation that can be
