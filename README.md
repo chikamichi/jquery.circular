@@ -42,6 +42,17 @@ default, it would be of the following shape:
 Events
 ------
 
+jquery.circular provides a few events you can bind to. "Slides" returned as
+data are slides descriptors, that is objects of the following shape (see
+`current()` method of the API described in the next section):
+
+``` js
+{
+  slide: jQuery.fn.jQuery.init[1],  // a jQuery matcher for the current slide
+  control: jQuery.fn.jQuery.init[1] // a jQuery matcher for the current slide's control
+}
+```
+
 ### circular:fading
 
 Triggered when the active slide is about to become unactive and "fade" out.
