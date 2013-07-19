@@ -18,7 +18,7 @@ Default settings
 Usage
 -----
 
-``` jquery
+``` js
 $('.wannabe-carousel').circular()
 ```
 
@@ -46,7 +46,7 @@ Events
 
 Triggered when the active slide is about to become unactive and "fade" out.
 
-``` jquery
+``` js
 $('.wannabe-carousel').on('circular:fading', function(event, prevSlide, nextSlide) {
   // prevSlide is the "fading" slide
   // nextSlide is the slide about to become the selected one
@@ -62,7 +62,7 @@ This event fires in between the transition's animation (typically, before the
 selected slide "fades" in, and after the previously active slide has "fade"
 out).
 
-``` jquery
+``` js
 $('.wannabe-carousel').on('circular:selected', function(event, slide) {
   // slide is the selected slide
 });
@@ -73,7 +73,7 @@ $('.wannabe-carousel').on('circular:selected', function(event, slide) {
 Triggered when a slide has been selected and has been made visible, after the
 transition's animation.
 
-``` jquery
+``` js
 $('.wannabe-carousel').on('circular:faded', function(event, newSlide, prevSlide) {
   // newSlide is the new active, visible slide
   // prevSlide is the former active slide
@@ -92,7 +92,7 @@ automatically when calling `.circular` on a jQuery matcher.
 
 Returns the current slide's DOM element.
 
-``` jquery
+``` js
 $('.wannabe-carousel').circular('currentSlide')
 ```
 
@@ -100,7 +100,7 @@ $('.wannabe-carousel').circular('currentSlide')
 
 Returns the DOM element for the current slide's control.
 
-``` jquery
+``` js
 $('.wannabe-carousel').circular('currentControl')
 ```
 
@@ -109,7 +109,7 @@ $('.wannabe-carousel').circular('currentControl')
 Returns both slide and slide's control DOM elements as an object, under the
 `slide` and `control` properties.
 
-``` jquery
+``` js
 $('.wannabe-carousel').circular('current')
 ```
 
@@ -126,7 +126,7 @@ expects the DOM element you bind to to provide an `id` data-attribute matching
 the slide's id you want to jump to, but in case this is not possible, an
 explicit id can be passed as the second argument in the default implementation.
 
-``` jquery
+``` js
 // Why not enabling transitioning to the fourth slide by hovering its control?
 $('.slide-control[data-id="3"]').on('hover', $('.wannabe-carousel').circular('jumpTo'))
 
