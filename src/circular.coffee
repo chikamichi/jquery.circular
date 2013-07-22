@@ -58,7 +58,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     # Returns an object with slide and control properties for the current
     # slide.
     current: ->
-      slide: methods.currentSlide()
+      slide = methods.currentSlide()
+      id: slide.data('id')
+      slide: slide
       control: methods.currentControl()
 
     pause: ->
@@ -84,7 +86,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
   # Private API.
   _internals =
-    # Set proper CSS classes on unactive/active slides and controls.
+    # Sets the proper CSS classes on unactive/active slides and controls.
     setActiveSlide: ->
       _controls.removeClass('active')
       methods.currentControl().addClass('active')
