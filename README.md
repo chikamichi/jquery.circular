@@ -240,7 +240,7 @@ assumptions about your DOM tree at the moment. Oh my!
 * Modern patterns ([proper jQuery Plugin's API](http://kaibun.net/blog/2013/04/19/a-fully-fledged-coffeescript-boilerplate-for-jquery-plugins/),
   Deferred-based architecture…)
 
-### Maybe one day?
+### On the roadmap
 
 * Overridable transition effect/logic
 * Allow the slides and the controls to be anywhere in the DOM (fully
@@ -248,6 +248,8 @@ assumptions about your DOM tree at the moment. Oh my!
 * Some more events (started, stopped, maybe paused/resumed)
 * Some hooks (beforeStart, beforeStop, things like that)
 * A demo page with examples and a nice design!
+
+When this is implemented, release 0.1.0 and start using SemVer.
 
 See TODO.md for other ideas.
 
