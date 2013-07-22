@@ -48,6 +48,7 @@ data are slides descriptors, that is objects of the following shape (see
 
 ``` js
 {
+  id: Integer,                      // current slide's id
   slide: jQuery.fn.jQuery.init[1],  // a jQuery matcher for the current slide
   control: jQuery.fn.jQuery.init[1] // a jQuery matcher for the current slide's control
 }
