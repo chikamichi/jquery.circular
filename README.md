@@ -118,6 +118,26 @@ $('.wannabe-carousel').on('circular:faded', function(event, newSlide, prevSlide)
 });
 ```
 
+### circular:paused
+
+Triggered when the carousel has been paused by calling `pause()`.
+
+``` js
+$('.wannabe-carousel').on('circular:paused', function(event, currentSlide) {
+  // the carousel was paused on currentSlide
+});
+```
+
+### circular:resumed
+
+Triggered when the carousel has been paused by calling `resume()`.
+
+``` js
+$('.wannabe-carousel').on('circular:resumed', function(event, currentSlide) {
+  // the carousel was resumed, starting from currentSlide
+});
+```
+
 API
 ---
 
@@ -151,18 +171,36 @@ Returns both slide and slide's control DOM elements as an object, under the
 $('.wannabe-carousel').circular('current')
 ```
 
+### pause
+
+Pause the carousel, if currently running.
+
+``` js
+$('.wannabe-carousel').circular('pause')
+```
+
+### resume
+
+Resume the carousel, if not currently running.
+
+``` js
+$('.wannabe-carousel').circular('resume')
+```
+
 ### jumpTo
 
 * arguments: `event[, id]`
 
 This is an event handler implementing the business logic involved when jumping
 to a slide. By default, it relies on a default implementation that can be
-overriden.
+overriden, although it should already do what you want.
 
 Bind events to the `jumpTo` handler to add custom interactions support. It
 expects the DOM element you bind to to provide an `id` data-attribute matching
 the slide's id you want to jump to, but in case this is not possible, an
 explicit id can be passed as the second argument in the default implementation.
+
+This callback will not resume the carousel if it has been paused.
 
 ``` js
 // Why not enabling transitioning to the fourth slide by hovering its control?
@@ -171,6 +209,14 @@ $('.slide-control[data-id="3"]').on('hover', $('.wannabe-carousel').circular('ju
 // let's say we are able to pick a random number among the slides indexes
 id = randomInt(nbSlides)
 $('body').on('click', 'a', $('.wannabe-carousel').circular('jumpTo', id))
+```
+
+### isRunning
+
+Checks whether the carousel's internal loop is running.
+
+``` js
+$('.wannabe-carousel').circular('isRunning')
 ```
 
 About this plugin

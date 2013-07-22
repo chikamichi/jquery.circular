@@ -21,7 +21,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
   _slides = null
   _controls = null
   _nbSlides = null
-  _interval = null
+  _loop = null
 
   # Public API.
   methods =
@@ -39,7 +39,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         _internals.setActiveSlide()
         $(_slides[_current]).fadeIn(_settings.transitionDelay)
         # Init the loop.
-        _interval = _internals.start()
+        _internals.start()
         _internals.bindEvents()
       else
         $(_settings.a_ctl, $this).hide()
@@ -61,6 +61,16 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       slide: methods.currentSlide()
       control: methods.currentControl()
 
+    pause: ->
+      _internals.stop()
+      $this.trigger('circular:paused', methods.current(), $this)
+      return $this
+
+    resume: ->
+      _internals.start()
+      $this.trigger('circular:resumed', methods.current(), $this)
+      return $this
+
     # Bind events to this handler to gain support for custom interactions.
     jumpTo: (event, id = null) ->
       id = $(event.currentTarget).data('id') unless id
@@ -69,6 +79,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       $this.trigger('circular:jumped', methods.current(), prevSlide, $this)
       return $this
 
+    isRunning: ->
+      _loop != null
 
   # Private API.
   _internals =
@@ -80,18 +92,37 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       methods.currentSlide().addClass('active')
       $this.trigger('circular:selected', methods.current(), $this)
 
+    # Returns the next slide's id.
+    #
+    # This has no side effect. Assign _current flag to actually advance to the
+    # next slide.
     next: ->
       if _current + 1 < _nbSlides
         _current + 1
       else
         0
 
-    # Looping.
+    # Start the animation loop, if not already running.
     #
-    # Call this to reinit the carousel from the current starting point.
+    # Returns whether the loop started or not.
     start: ->
-      setInterval(_internals.transitionTo
-      , _settings.transitionDelay + _settings.displayDuration)
+      if not methods.isRunning()
+        _loop = setInterval(_internals.transitionTo
+                , _settings.transitionDelay + _settings.displayDuration)
+        return true
+      else
+        return false
+
+    # Stop the animation loop, if currently running.
+    #
+    # Returns whether the loop stopped or not.
+    stop: ->
+      if methods.isRunning()
+        window.clearInterval(_loop)
+        _loop = null
+        return true
+      else
+        return false
 
     # TODO: refactor this so that it is possible to provide a custom
     # transition effect/logic.
@@ -116,9 +147,10 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       $(_settings.a_ctl, $this).click methods.jumpTo
 
     jumpTo: (id) ->
-      window.clearInterval(_interval)
+      wasRunning = methods.isRunning()
+      _internals.stop() if wasRunning
       _internals.transitionTo(0, id)
-      _interval = _internals.start()
+      _internals.start() if wasRunning
       return false
 
   $.fn.circular = (method) ->
