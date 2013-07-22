@@ -44,6 +44,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       else
         $(_settings.a_ctl, $this).hide()
 
+      $this.trigger('circular:init', $this)
       return $this
 
     # Returns the current slide's DOM element.
@@ -63,7 +64,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     # Bind events to this handler to gain support for custom interactions.
     jumpTo: (event, id = null) ->
       id = $(event.currentTarget).data('id') unless id
+      prevSlide = methods.current()
       _internals.jumpTo(id)
+      $this.trigger('circular:jumped', methods.current(), prevSlide, $this)
+      return $this
+
 
   # Private API.
   _internals =

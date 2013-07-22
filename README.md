@@ -53,6 +53,33 @@ data are slides descriptors, that is objects of the following shape (see
 }
 ```
 
+All callbacks take an optionnal last argument which is the jQuery matcher you
+are binding to (`$(this)` that is), which may come in handy if you change the
+callback's scope. For the sake of simplicity, this argument is not shown in the
+code examples below.
+
+### circular:init
+
+Triggered when the carousel starts.
+
+``` js
+$('.wannabe-carousel').on('circular:init', function() {
+  // sit and watch
+})
+```
+
+### circular:jumped
+
+Triggerd by the default implementation of `jumpTo()` (see API below).
+
+
+``` js
+$('.wannabe-carousel').on('circular:jumped', function(event, newSlide, prevSlide) {
+  // newSlide is the newly active slide
+  // prevSlide is the former active slide
+});
+```
+
 ### circular:fading
 
 Triggered when the active slide is about to become unactive and "fade" out.
