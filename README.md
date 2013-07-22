@@ -245,11 +245,11 @@ assumptions about your DOM tree at the moment. Oh my!
 * Overridable transition effect/logic
 * Allow the slides and the controls to be anywhere in the DOM (fully
   data-\* based), removing any unfair assumption about your DOM tree
-* Extend the API with prev/next/pause/resume and provide default binding
-  to matching event handlers, as been done for `jumpTo`
 * Some more events (started, stopped, maybe paused/resumed)
 * Some hooks (beforeStart, beforeStop, things like that)
 * A demo page with examples and a nice design!
+
+See TODO.md for other ideas.
 
 License
 -------
