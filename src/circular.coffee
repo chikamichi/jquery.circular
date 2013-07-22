@@ -1,5 +1,5 @@
 ###
-jQuery Circular Plugin v0.3
+jQuery Circular Plugin v0.0.4
 
 Release: 19/07/2013
 Author: Jean-Denis Vauguet <jd@vauguet.fr>
