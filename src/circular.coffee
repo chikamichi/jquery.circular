@@ -11,13 +11,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 (($, window, document) ->
   $this = undefined
   _settings =
-    a_slide: ".slides .slide"
-    a_ctl: ".controls .control"
+    aSlide: '.slides .slide'
+    aControl: '.controls .control'
     transitionDelay: 1000
     displayDuration: 4000
     startingPoint: 0
 
-  _current = _settings.startingPoint
+  # FIXME: is that actually needed?
+  _current = null
   _slides = null
   _controls = null
   _nbSlides = null
@@ -28,8 +29,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     init: (options) ->
       $this = $(@)
       $.extend _settings, (options or {})
-      _slides = $(_settings.a_slide, $this)
-      _controls = $(_settings.a_ctl, $this)
+      _current = _settings.startingPoint
+      _slides = $(_settings.aSlide, $this)
+      _controls = $(_settings.aControl, $this)
       _nbSlides = _slides.size()
 
       # Let's go…
@@ -42,7 +44,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         _internals.start()
         _internals.bindEvents()
       else
-        $(_settings.a_ctl, $this).hide()
+        $(_settings.aControl, $this).hide()
 
       $this.trigger('circular:init', $this)
       return $this
@@ -146,7 +148,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     bindEvents: ->
       # React upon a control being clicked: switch to its matching slide, reset
       # the loop.
-      $(_settings.a_ctl, $this).click methods.jumpTo
+      $(_settings.aControl, $this).click methods.jumpTo
 
     jumpTo: (id) ->
       wasRunning = methods.isRunning()
@@ -158,8 +160,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
   $.fn.circular = (method) ->
     if methods[method]
       methods[method].apply @, Array::slice.call(arguments, 1)
-    else if typeof method is "object" or not method
+    else if typeof method is 'object' or not method
       methods.init.apply @, arguments
     else
-      $.error "Method " + method + " does not exist on jquery.circular"
+      $.error 'Method ' + method + ' does not exist on jquery.circular'
 ) jQuery, window, document

@@ -1,12 +1,18 @@
 {
   "predef": [
-      "describe",
-      "it",
-      "after",
-      "afterEach",
-      "before",
-      "beforeEach"
+    "describe",
+    "it",
+    "after",
+    "afterEach",
+    "before",
+    "beforeEach"
   ],
+
+  "globals": {
+    "jQuery": false,
+    "window": false,
+    "document": false
+  },
 
   "indent": 2,
   "node": true,
