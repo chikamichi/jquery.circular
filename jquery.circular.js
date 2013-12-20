@@ -15,7 +15,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     var document, jsdom, window;
     if (typeof exports !== 'undefined') {
       jsdom = require('jsdom');
-      document = jsdom.jsdom('<html><head></head><body>hello world</body></html>');
+      document = jsdom.jsdom(null);
       window = document.parentWindow;
       return module.exports = factory(require('jquery'), document, window);
     } else {

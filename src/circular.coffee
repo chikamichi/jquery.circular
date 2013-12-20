@@ -12,7 +12,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
   if typeof exports isnt 'undefined'
     # deps. defined as CommonJS exports (for tests)
     jsdom = require('jsdom')
-    document = jsdom.jsdom('<html><head></head><body>hello world</body></html>')
+    document = jsdom.jsdom(null)
     window = document.parentWindow
     module.exports = factory(require('jquery'), document, window)
   else
