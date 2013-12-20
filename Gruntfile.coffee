@@ -32,8 +32,8 @@ module.exports = (grunt) ->
       #files: ['<%= jshint.files %>']
       #tasks: ['jshint', 'simplemocha:short']
       files: ['src/circular.coffee']
-      tasks: ['check']
+      tasks: ['check', 'test']
 
-  grunt.registerTask('test', 'mochaTest')
   grunt.registerTask('check', ['coffee', 'jshint'])
-  grunt.registerTask('default', 'check')
+  grunt.registerTask('test', 'mochaTest')
+  grunt.registerTask('default', 'watch')
