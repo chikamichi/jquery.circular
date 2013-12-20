@@ -3,7 +3,7 @@ jquery.circular
 
 — *No! Not yet another fraking carousel library!*
 
-— But it's a dead-simple, modern one! It even has promises in it!
+— Here, grab that cookie.
 
 — *Oh? All right then.*
 
@@ -42,9 +42,10 @@ default, it would be of the following shape:
 Events
 ------
 
-jquery.circular provides a few events you can bind to. "Slides" returned as
-data are slides descriptors, that is objects of the following shape (see
-`current()` method of the API described in the next section):
+jquery.circular provides a few events you can bind to. Most of them return
+slide objects. Those "slides" are actually returned as slides *descriptors*
+(not DOM nodes *per se*): those are objects of the following shape (also see
+the `current()` method of the API described in the next section):
 
 ``` js
 {
@@ -54,10 +55,10 @@ data are slides descriptors, that is objects of the following shape (see
 }
 ```
 
-All callbacks take an optionnal last argument which is the jQuery matcher you
-are binding to (`$(this)` that is), which may come in handy if you change the
-callback's scope. For the sake of simplicity, this argument is not shown in the
-code examples below.
+All callbacks take an optional last argument, which is the jQuery matcher you
+are binding to (`$(this)`, that is). This may come in handy if you change the
+callback's scope, for whatever reason. For the sake of simplicity, this last
+argument is not shown in the code examples below.
 
 ### circular:init
 
@@ -139,15 +140,15 @@ $('.wannabe-carousel').on('circular:resumed', function(event, currentSlide) {
 });
 ```
 
-API
----
+Public API
+----------
 
-### init
+### init()
 
-Inits the carousel. It should not be called more than once, and will be ran
-automatically when calling `.circular` on a jQuery matcher.
+Inits the carousel. It should not be called more than once, and will actually
+be ran automatically when calling `.circular()` on a jQuery matcher.
 
-### currentSlide
+### currentSlide()
 
 Returns the current slide's DOM element.
 
@@ -155,7 +156,7 @@ Returns the current slide's DOM element.
 $('.wannabe-carousel').circular('currentSlide')
 ```
 
-### currentControl
+### currentControl()
 
 Returns the DOM element for the current slide's control.
 
@@ -163,26 +164,26 @@ Returns the DOM element for the current slide's control.
 $('.wannabe-carousel').circular('currentControl')
 ```
 
-### current
+### current()
 
-Returns both slide and slide's control DOM elements as an object, under the
-`slide` and `control` properties.
+Returns both current slide and current slide's control DOM elements as an
+object, under the `slide` and `control` properties respectively.
 
 ``` js
 $('.wannabe-carousel').circular('current')
 ```
 
-### pause
+### pause()
 
-Pause the carousel, if currently running.
+Pauses the carousel, if currently running.
 
 ``` js
 $('.wannabe-carousel').circular('pause')
 ```
 
-### resume
+### resume()
 
-Resume the carousel, if not currently running.
+Resumes the carousel, if not currently running.
 
 ``` js
 $('.wannabe-carousel').circular('resume')
@@ -192,27 +193,28 @@ $('.wannabe-carousel').circular('resume')
 
 * arguments: `event[, id]`
 
-This is an event handler implementing the business logic involved when jumping
-to a slide. By default, it relies on a default implementation that can be
-overriden, although it should already do what you want.
+This is an *event handler* implementing the business logic involved when jumping
+to a specific slide. By default, it relies on a default implementation that can
+be overriden, although it will probably just work as is.
 
 Bind events to the `jumpTo` handler to add custom interactions support. It
 expects the DOM element you bind to to provide an `id` data-attribute matching
 the slide's id you want to jump to, but in case this is not possible, an
 explicit id can be passed as the second argument in the default implementation.
 
-This callback will not resume the carousel if it has been paused.
+This callback will *not* resume the carousel if it has been paused.
 
 ``` js
 // Why not enabling transitioning to the fourth slide by hovering its control?
 $('.slide-control[data-id="3"]').on('hover', $('.wannabe-carousel').circular('jumpTo'))
 
-// let's say we are able to pick a random number among the slides indexes
-id = randomInt(nbSlides)
-$('body').on('click', 'a', $('.wannabe-carousel').circular('jumpTo', id))
+// let's say we are able to pick a random number among the slides indexes, and
+// are willing to crazy-jump to it each time a div is clicked:
+id = randomSlideId()
+$('body').on('click', 'div', $('.wannabe-carousel').circular('jumpTo', id))
 ```
 
-### isRunning
+### isRunning()
 
 Checks whether the carousel's internal loop is running.
 
@@ -229,8 +231,8 @@ About this plugin
 * Be overall complicated
 * Provide styles, pictures…
 
-"Trying" means those are my goals. For instance, it *does* make some unfair
-assumptions about your DOM tree at the moment. Oh my!
+"Trying" means those are my goals. For instance, it *does* (atm) make unfair
+assumptions about your DOM tree. Oh my!
 
 ### What it is trying to do
 
@@ -238,7 +240,7 @@ assumptions about your DOM tree at the moment. Oh my!
 * Simple code so that one can hack on
 * Use a convention over configuration approach, but remain fully tweakable
 * Modern patterns ([proper jQuery Plugin's API](http://kaibun.net/blog/2013/04/19/a-fully-fledged-coffeescript-boilerplate-for-jquery-plugins/),
-  Deferred-based architecture…)
+  Deferred-based architecture, maybe generator-based at some point…)
 
 ### On the roadmap
 
