@@ -11,14 +11,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 ((root, factory) ->
   if typeof exports isnt 'undefined'
     # deps. defined as CommonJS exports (for tests)
-    jsdom = require('jsdom')
-    document = jsdom.jsdom(null)
-    window = document.parentWindow
-    module.exports = factory(require('jquery'), document, window)
+    module.exports = factory(require('jquery'))
   else
-    # deps. fetched from the root object (aka. the browser)
-    factory root.jQuery, root.document, root.window
-) this, ($, document, window) ->
+    # deps. fetched from the root object (aka. the browser context)
+    factory root.jQuery
+) this, ($) ->
   $this = undefined
   _settings =
     aSlide: '.slides .slide'
@@ -132,7 +129,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     # Returns whether the loop stopped or not.
     stop: ->
       if methods.isRunning()
-        window.clearInterval(_loop)
+        clearInterval(_loop)
         _loop = null
         return true
       else

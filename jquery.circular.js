@@ -12,16 +12,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
 (function() {
   (function(root, factory) {
-    var document, jsdom, window;
     if (typeof exports !== 'undefined') {
-      jsdom = require('jsdom');
-      document = jsdom.jsdom(null);
-      window = document.parentWindow;
-      return module.exports = factory(require('jquery'), document, window);
+      return module.exports = factory(require('jquery'));
     } else {
-      return factory(root.jQuery, root.document, root.window);
+      return factory(root.jQuery);
     }
-  })(this, function($, document, window) {
+  })(this, function($) {
     var $this, methods, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
     $this = void 0;
     _settings = {
@@ -123,7 +119,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       },
       stop: function() {
         if (methods.isRunning()) {
-          window.clearInterval(_loop);
+          clearInterval(_loop);
           _loop = null;
           return true;
         } else {

@@ -1,4 +1,3 @@
-jsdom = require('jsdom')
 chai = require('chai')
 sinon = require('sinon')
 jQuery = $ = require('jquery')
@@ -13,10 +12,7 @@ emptyCarousel = '<html><body><div class="carousel"></div></body></html>'
 fullCarousel = '<html><body><div class="carousel"><ul class="slides"><li class="slide" data-id=0>slide 1</li><li class="slide" data-id=1>slide 2</li></ul><ul class="controls"><li class="control" data-id=0>control 1</li><li class="control" data-id=1>control 1</li></ul></div></body></html>'
 
 factory = (dom) ->
-  document = jsdom.jsdom(dom)
-  # Let's return only the <body>, not the whole <html>
-  $($(document.innerHTML).get(0).innerHTML)
-
+  $(dom)
 
 describe '$.fn.circular', ->
   describe 'ok, it', ->
