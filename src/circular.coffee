@@ -8,7 +8,16 @@ http://github.com/chikamichi/jquery.circular
 
 Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.php
 ###
-(($, window, document) ->
+((root, factory) ->
+  if typeof exports isnt 'undefined'
+    # deps. defined as CommonJS exports (for tests)
+    window = require('jsdom').jsdom('<html><body></body></html>').createWindow()
+    document = window.document
+    module.exports = factory(require('jquery'), document)
+  else
+    # deps. fetched from the root object (aka. the browser)
+    factory root.jQuery, root.window
+) this, ($, window) ->
   $this = undefined
   _settings =
     aSlide: '.slides .slide'
@@ -164,4 +173,3 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       methods.init.apply @, arguments
     else
       $.error 'Method ' + method + ' does not exist on jquery.circular'
-) jQuery, window, document

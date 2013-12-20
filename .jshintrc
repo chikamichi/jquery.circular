@@ -1,5 +1,6 @@
 {
   "predef": [
+    "define",
     "describe",
     "it",
     "after",
@@ -10,6 +11,7 @@
 
   "globals": {
     "jQuery": false,
+    "$": false,
     "window": false,
     "document": false
   },

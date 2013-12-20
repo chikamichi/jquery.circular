@@ -11,7 +11,16 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
 
 (function() {
-  (function($, window, document) {
+  (function(root, factory) {
+    var document, window;
+    if (typeof exports !== 'undefined') {
+      window = require('jsdom').jsdom('<html><body></body></html>').createWindow();
+      document = window.document;
+      return module.exports = factory(require('jquery'), document);
+    } else {
+      return factory(root.jQuery, root.window);
+    }
+  })(this, function($, window) {
     var $this, methods, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
     $this = void 0;
     _settings = {
@@ -164,6 +173,6 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return $.error('Method ' + method + ' does not exist on jquery.circular');
       }
     };
-  })(jQuery, window, document);
+  });
 
 }).call(this);
