@@ -29,8 +29,6 @@ module.exports = (grunt) ->
         src: ['test/**/*.coffee']
 
     watch:
-      #files: ['<%= jshint.files %>']
-      #tasks: ['jshint', 'simplemocha:short']
       files: ['src/circular.coffee', 'test/**/*.coffee']
       tasks: ['check', 'test']
 
