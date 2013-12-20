@@ -11,13 +11,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 ((root, factory) ->
   if typeof exports isnt 'undefined'
     # deps. defined as CommonJS exports (for tests)
-    window = require('jsdom').jsdom('<html><body></body></html>').createWindow()
-    document = window.document
-    module.exports = factory(require('jquery'), document)
+    jsdom = require('jsdom')
+    document = jsdom.jsdom('<html><head></head><body>hello world</body></html>')
+    window = document.parentWindow
+    module.exports = factory(require('jquery'), document, window)
   else
     # deps. fetched from the root object (aka. the browser)
-    factory root.jQuery, root.window
-) this, ($, window) ->
+    factory root.jQuery, root.document, root.window
+) this, ($, document, window) ->
   $this = undefined
   _settings =
     aSlide: '.slides .slide'

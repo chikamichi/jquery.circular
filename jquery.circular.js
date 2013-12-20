@@ -12,15 +12,16 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
 (function() {
   (function(root, factory) {
-    var document, window;
+    var document, jsdom, window;
     if (typeof exports !== 'undefined') {
-      window = require('jsdom').jsdom('<html><body></body></html>').createWindow();
-      document = window.document;
-      return module.exports = factory(require('jquery'), document);
+      jsdom = require('jsdom');
+      document = jsdom.jsdom('<html><head></head><body>hello world</body></html>');
+      window = document.parentWindow;
+      return module.exports = factory(require('jquery'), document, window);
     } else {
-      return factory(root.jQuery, root.window);
+      return factory(root.jQuery, root.document, root.window);
     }
-  })(this, function($, window) {
+  })(this, function($, document, window) {
     var $this, methods, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
     $this = void 0;
     _settings = {
