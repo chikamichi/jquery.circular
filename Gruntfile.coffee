@@ -22,10 +22,7 @@ module.exports = (grunt) ->
         options:
           reporter: 'spec'
           clearRequireCache: true # play well with `grunt watch`
-          require: [
-            'coffee-script'
-            'node_modules/chai/chai.js'
-          ]
+          require: 'coffee-script'
         src: ['test/**/*.coffee']
 
     watch:
