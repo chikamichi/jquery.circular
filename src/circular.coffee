@@ -165,7 +165,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       return false
 
   $.fn.circular = (method) ->
-    if methods[method]
+    if method == 'api'
+      Object.keys(methods)
+    else if methods[method]
       methods[method].apply @, Array::slice.call(arguments, 1)
     else if typeof method is 'object' or not method
       methods.init.apply @, arguments

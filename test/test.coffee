@@ -15,16 +15,49 @@ factory = (dom) ->
   $(dom)
 
 describe '$.fn.circular', ->
-  describe 'ok, it', ->
+  describe 'ok, it…', ->
     it 'exists', ->
       expect($.fn.circular).to.exist
 
     it 'is available on jQuery selectors (ie. jQuery runs fine lolz)', ->
       expect($()).to.have.property('circular')
 
+  describe 'its API…', ->
+    beforeEach ->
+      @$fake = $()
+      @$fake.circular()
+      # FIXME: Maybe it would be better to extract the factory
+      # to a named function, so that it can be tested against
+      # (internals…)
+      @api = @$fake.circular('api')
+
+    it 'exposes init()', ->
+      expect(@api).to.include('init')
+
+    it 'exposes currentSlide()', ->
+      expect(@api).to.include('currentSlide')
+
+    it 'exposes currentControl()', ->
+      expect(@api).to.include('currentControl')
+
+    it 'exposes current()', ->
+      expect(@api).to.include('current')
+
+    it 'exposes pause()', ->
+      expect(@api).to.include('pause')
+
+    it 'exposes resume()', ->
+      expect(@api).to.include('resume')
+
+    it 'exposes jumpTo()', ->
+      expect(@api).to.include('jumpTo')
+
+    it 'exposes isRunning()', ->
+      expect(@api).to.include('isRunning')
+
   # Called without inner DOM
 
-  describe 'when called without inner DOM, it', ->
+  describe 'when called on an empty element, it…', ->
     beforeEach ->
       @$body = factory(emptyCarousel)
       @$carousel = @$body.find('.carousel')
@@ -32,12 +65,11 @@ describe '$.fn.circular', ->
 
     it 'runs fine', ->
       # No slide atm, so it won't run, but it's up at least
-      expect(@$carousel.circular('isRunning')).to.exist
       expect(@$carousel.circular('isRunning')).not.to.be.true
 
   ## Called with expected DOM
 
-  describe 'when called with some expected, compliant DOM, it', ->
+  describe 'when called on some compliant element, it…', ->
     beforeEach ->
       @$body = factory(fullCarousel)
       @$carousel = @$body.find('.carousel')

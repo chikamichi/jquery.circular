@@ -162,7 +162,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       }
     };
     return $.fn.circular = function(method) {
-      if (methods[method]) {
+      if (method === 'api') {
+        return Object.keys(methods);
+      } else if (methods[method]) {
         return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
       } else if (typeof method === 'object' || !method) {
         return methods.init.apply(this, arguments);
