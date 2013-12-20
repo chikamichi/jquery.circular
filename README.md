@@ -7,6 +7,8 @@ jquery.circular
 
 — *Oh? All right then.*
 
+[![Build Status](https://travis-ci.org/chikamichi/jquery.circular.png)](https://travis-ci.org/chikamichi/jquery.circular)
+
 Default settings
 ----------------
 
