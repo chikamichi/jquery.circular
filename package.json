@@ -8,6 +8,22 @@
     "node_modules",
     "components"
   ],
+  "keywords": [
+    "jquery",
+    "ui",
+    "animation",
+    "carousel",
+    "slider",
+    "slideshow",
+    "deferred",
+    "responsive"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/chikamichi/jquery.circular/blob/master/LICENSE.txt"
+    }
+  ],
   "scripts": {
     "test": "grunt travis --verbose"
   },
