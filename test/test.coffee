@@ -26,9 +26,6 @@ describe '$.fn.circular', ->
     beforeEach ->
       @$fake = $()
       @$fake.circular()
-      # FIXME: Maybe it would be better to extract the factory
-      # to a named function, so that it can be tested against
-      # (internals…)
       @api = @$fake.circular('api')
 
     it 'exposes init()', ->

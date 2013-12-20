@@ -8,6 +8,9 @@
     "node_modules",
     "components"
   ],
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
   "dependencies": {
     "jquery": "1.8.3"
   },

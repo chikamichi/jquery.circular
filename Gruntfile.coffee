@@ -32,3 +32,4 @@ module.exports = (grunt) ->
   grunt.registerTask('check', ['coffee', 'jshint'])
   grunt.registerTask('test', 'mochaTest')
   grunt.registerTask('default', 'watch')
+  grunt.registerTask('travis', ['check', 'test'])
