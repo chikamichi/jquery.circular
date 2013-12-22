@@ -25,7 +25,10 @@
     }
   ],
   "scripts": {
-    "test": "grunt travis --verbose"
+    "test": "grunt travis --verbose",
+    "blanket": {
+      "pattern": ["build"]
+    }
   },
   "engines": {
     "node": ">=0.8"

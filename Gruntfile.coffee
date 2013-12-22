@@ -17,14 +17,15 @@ module.exports = (grunt) ->
     coffee:
       compile:
         files:
-          'jquery.circular.js': 'src/circular.coffee',
+          'jquery.circular.js': 'src/circular.coffee'
+          'build/circular.js': 'src/circular.coffee'
 
     mochacov:
       options:
-        reporter: 'spec',
+        #reporter: 'html-cov',
         compilers: ['coffee:coffee-script']
-        #coverage: true
-      files: ['test/**/*.coffee']
+        coverage: true
+      all: ['test/**/*.coffee']
 
     watch:
       files: ['src/circular.coffee', 'test/**/*.coffee']

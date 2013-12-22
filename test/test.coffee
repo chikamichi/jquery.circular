@@ -2,7 +2,7 @@ chai = require('chai')
 sinon = require('sinon')
 jQuery = $ = require('jquery')
 
-require ('../jquery.circular')
+require ('../build/circular')
 
 assert = chai.assert
 expect = chai.expect
