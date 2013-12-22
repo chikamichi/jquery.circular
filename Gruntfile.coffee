@@ -21,18 +21,23 @@ module.exports = (grunt) ->
           'build/circular.js': 'src/circular.coffee'
 
     mochacov:
+      coverage:
+        options:
+          coveralls:
+            serviceName: 'travis-ci'
+      test:
+        options:
+          reporter: 'spec'
       options:
-        #reporter: 'html-cov',
         compilers: ['coffee:coffee-script']
-        coverage: true
-      all: ['test/**/*.coffee']
+        files: ['test/**/*.coffee']
 
     watch:
       files: ['src/circular.coffee', 'test/**/*.coffee']
       tasks: ['check', 'test']
 
   grunt.registerTask('check', ['coffee', 'jshint'])
-  grunt.registerTask('test', 'mochacov')
+  grunt.registerTask('test', 'mochacov:test')
 
   grunt.registerTask('default', 'watch')
-  grunt.registerTask('travis', ['check', 'test'])
+  grunt.registerTask('travis', ['check', 'mochacov:coverage'])
