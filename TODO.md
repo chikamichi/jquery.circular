@@ -1,9 +1,7 @@
+* grunt-karma + karma-mocha + Istanbul for coverage
 * jumpTo() should not be an event handler, but an API method to jump to a slide.
   The event handler should be named jumpedTo() and be a hook, called on
   'jumped' events.
 * isolated, overridable animation implementation.
 * get rid of the assumption that controls are within slides' elements. Use
   absolute references to the DOM.
-
-* travisCI build (grunt)
-* [ZombieJS for integration tests](http://redotheweb.com/2013/01/15/functional-testing-for-nodejs-using-mocha-and-zombie-js.html)
