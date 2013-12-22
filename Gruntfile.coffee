@@ -25,6 +25,7 @@ module.exports = (grunt) ->
         options:
           coveralls:
             serviceName: 'travis-ci'
+            repo_token: 'EPwLMGsbXbKvvVk9hGRSTK0CY2ueNZsEr'
       test:
         options:
           reporter: 'spec'
