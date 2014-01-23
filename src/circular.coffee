@@ -35,7 +35,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
   methods =
     init: (options) ->
       $this = $(@)
-      $.extend _settings, (options or {})
+      $.extend true, _settings, (options or {})
       _current = _settings.startingPoint
       _slides = $(_settings.aSlide, $this)
       _controls = $(_settings.aControl, $this)
@@ -138,21 +138,23 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     finishAllAnimations: ->
       $.each(_slides, (index, slide) -> $(slide).finish())
 
+    # TODO: it could prove useful to pass the animated slide descriptor?
+    effects:
+      out: -> _settings.effects?.out.call(@) or $.fn.fadeOut
+      in: -> _settings.effects?.in.call(@) or $.fn.fadeIn
+
     # TODO: refactor this so that it is possible to provide a custom
     # transition effect/logic.
-    # Use a custom $.fn.queue
     transitionTo: (to = null, delay = _settings.transitionDelay) ->
+      # FIXME: do this only if an animation is ongoing
       _internals.finishAllAnimations()
 
       prevSlide = methods.current()
       # FIXME: this assumes the controls are within the slides.
       faded = null
       prevSlide.slide.queue((next) ->
-        # TODO: don't call .fadeOut like that
-        # use apply to call any custom (with .fadeOut as default) animation
-        # function, which MUST return a promise to be resolved once the
-        # animation completed.
-        faded = $(@).fadeOut(delay).promise()
+        effect = _internals.effects.out.call(@)
+        faded = effect.call($(@), delay).promise()
         next()
       )
 
@@ -164,18 +166,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:faded:out', [nextSlide, prevSlide, $this])
         _internals.setActiveSlide()
         nextSlide.slide.queue((next) ->
-          # TODO: don't call .fadeIn like that
-          # use apply to call any custom (with .fadeIn as default) animation
-          # function, which MUST return a promise to be resolved once the
-          # animation completed.
-          $(@).fadeIn(delay)
+          effect = _internals.effects.in.call(@)
+          effect.call($(@), delay).promise().done ->
+            $this.trigger('circular:faded:in', [nextSlide, prevSlide, $this])
           next()
         )
-        $this.trigger('circular:faded', nextSlide, prevSlide, $this)
 
     bindEvents: ->
       # React upon a control being clicked: switch to its matching slide.
-      #
       # It resets the loop, which resumes from the new slide.
       $(_settings.aControl, $this).click methods.jumpTo
 

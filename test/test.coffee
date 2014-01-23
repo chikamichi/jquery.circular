@@ -76,3 +76,4 @@ describe '$.fn.circular', ->
       expect(@$carousel.circular('isRunning')).to.be.true
 
   ## TODO: Called with custom DOM
+  ## TODO: spec on events ordering / lifecycle

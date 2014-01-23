@@ -34,7 +34,8 @@
   "regexp": false,
   "undef": true,
   "unused": "vars",
-  "quotmark": "single",
+  /* Messes with coffee -w for generated hash keys. */
+  /*"quotmark": "single",*/
   "strict": false,
   "trailing": true,
   "camelcase": true,

@@ -35,7 +35,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     methods = {
       init: function(options) {
         $this = $(this);
-        $.extend(_settings, options || {});
+        $.extend(true, _settings, options || {});
         _current = _settings.startingPoint;
         _slides = $(_settings.aSlide, $this);
         _controls = $(_settings.aControl, $this);
@@ -131,6 +131,16 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           return $(slide).finish();
         });
       },
+      effects: {
+        out: function() {
+          var _ref;
+          return ((_ref = _settings.effects) != null ? _ref.out.call(this) : void 0) || $.fn.fadeOut;
+        },
+        "in": function() {
+          var _ref;
+          return ((_ref = _settings.effects) != null ? _ref["in"].call(this) : void 0) || $.fn.fadeIn;
+        }
+      },
       transitionTo: function(to, delay) {
         var faded, nextSlide, prevSlide;
         if (to == null) {
@@ -143,7 +153,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         prevSlide = methods.current();
         faded = null;
         prevSlide.slide.queue(function(next) {
-          faded = $(this).fadeOut(delay).promise();
+          var effect;
+          effect = _internals.effects.out.call(this);
+          faded = effect.call($(this), delay).promise();
           return next();
         });
         _current = to !== null ? to : _internals.next();
@@ -152,11 +164,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return faded.done(function() {
           $this.trigger('circular:faded:out', [nextSlide, prevSlide, $this]);
           _internals.setActiveSlide();
-          nextSlide.slide.queue(function(next) {
-            $(this).fadeIn(delay);
+          return nextSlide.slide.queue(function(next) {
+            var effect;
+            effect = _internals.effects["in"].call(this);
+            effect.call($(this), delay).promise().done(function() {
+              return $this.trigger('circular:faded:in', [nextSlide, prevSlide, $this]);
+            });
             return next();
           });
-          return $this.trigger('circular:faded', nextSlide, prevSlide, $this);
         });
       },
       bindEvents: function() {
