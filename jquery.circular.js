@@ -126,6 +126,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           return false;
         }
       },
+      stopAllAnimations: function() {
+        return $.each(_slides, function(index, slide) {
+          return $(slide).finish();
+        });
+      },
       transitionTo: function(to, delay) {
         var faded, nextSlide, prevSlide;
         if (to == null) {
@@ -134,14 +139,22 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         if (delay == null) {
           delay = _settings.transitionDelay;
         }
+        _internals.stopAllAnimations();
         prevSlide = methods.current();
-        faded = prevSlide.slide.fadeOut(delay).promise();
+        faded = null;
+        prevSlide.slide.queue(function(next) {
+          faded = $(this).fadeOut(delay).promise();
+          return next();
+        });
         _current = to !== null ? to : _internals.next();
         nextSlide = methods.current();
         $this.trigger('circular:fading', prevSlide, nextSlide, $this);
         return faded.done(function() {
           _internals.setActiveSlide();
-          nextSlide.slide.fadeIn(delay);
+          nextSlide.slide.queue(function(next) {
+            $(this).fadeIn(delay);
+            return next();
+          });
           return $this.trigger('circular:faded', nextSlide, prevSlide, $this);
         });
       },

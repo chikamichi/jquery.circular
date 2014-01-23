@@ -135,12 +135,25 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       else
         return false
 
+    stopAllAnimations: ->
+      $.each(_slides, (index, slide) -> $(slide).finish())
+
     # TODO: refactor this so that it is possible to provide a custom
     # transition effect/logic.
     transitionTo: (to = null, delay = _settings.transitionDelay) ->
+      _internals.stopAllAnimations()
+
       prevSlide = methods.current()
       # FIXME: this assumes the controls are within the slides.
-      faded = prevSlide.slide.fadeOut(delay).promise()
+      faded = null
+      prevSlide.slide.queue((next) ->
+        # TODO: don't call .fadeOut like that
+        # use apply to call any custom (with .fadeOut as default) animation
+        # function, which MUST return a promise to be resolved once the
+        # animation completed.
+        faded = $(@).fadeOut(delay).promise()
+        next()
+      )
 
       _current = if to != null then to else _internals.next()
       nextSlide = methods.current()
@@ -149,7 +162,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
       faded.done ->
         _internals.setActiveSlide()
-        nextSlide.slide.fadeIn(delay)
+        nextSlide.slide.queue((next) ->
+          # TODO: don't call .fadeIn like that
+          # use apply to call any custom (with .fadeIn as default) animation
+          # function, which MUST return a promise to be resolved once the
+          # animation completed.
+          $(@).fadeIn(delay)
+          next()
+        )
         $this.trigger('circular:faded', nextSlide, prevSlide, $this)
 
     bindEvents: ->
