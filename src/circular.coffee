@@ -53,7 +53,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       else
         $(_settings.aControl, $this).hide()
 
-      $this.trigger('circular:init', $this)
+      $this.trigger('circular:init', [$this])
       return $this
 
     # Returns the current slide's DOM element.
@@ -74,12 +74,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
     pause: ->
       _internals.stop()
-      $this.trigger('circular:paused', methods.current(), $this)
+      $this.trigger('circular:paused', [methods.current(), $this])
       return $this
 
     resume: ->
       _internals.start()
-      $this.trigger('circular:resumed', methods.current(), $this)
+      $this.trigger('circular:resumed', [methods.current(), $this])
       return $this
 
     # Bind events to this handler to gain support for custom interactions.
@@ -87,7 +87,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       id = $(event.currentTarget).data('id') unless id
       prevSlide = methods.current()
       _internals.jumpTo(id)
-      $this.trigger('circular:jumped', methods.current(), prevSlide, $this)
+      $this.trigger('circular:jumped', [methods.current(), prevSlide, $this])
       return $this
 
     isRunning: ->
@@ -101,7 +101,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       methods.currentControl().addClass('active')
       _slides.removeClass('active')
       methods.currentSlide().addClass('active')
-      $this.trigger('circular:selected', methods.current(), $this)
+      $this.trigger('circular:selected', [methods.current(), $this])
 
     # Returns the next slide's id.
     #
@@ -158,10 +158,10 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
       _current = if to != null then to else _internals.next()
       nextSlide = methods.current()
-
-      $this.trigger('circular:fading', prevSlide, nextSlide, $this)
+      $this.trigger('circular:fading', [prevSlide, nextSlide, $this])
 
       faded.done ->
+        $this.trigger('circular:faded:out', [nextSlide, prevSlide, $this])
         _internals.setActiveSlide()
         nextSlide.slide.queue((next) ->
           # TODO: don't call .fadeIn like that

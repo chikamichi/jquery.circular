@@ -49,7 +49,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         } else {
           $(_settings.aControl, $this).hide();
         }
-        $this.trigger('circular:init', $this);
+        $this.trigger('circular:init', [$this]);
         return $this;
       },
       currentSlide: function() {
@@ -69,12 +69,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       },
       pause: function() {
         _internals.stop();
-        $this.trigger('circular:paused', methods.current(), $this);
+        $this.trigger('circular:paused', [methods.current(), $this]);
         return $this;
       },
       resume: function() {
         _internals.start();
-        $this.trigger('circular:resumed', methods.current(), $this);
+        $this.trigger('circular:resumed', [methods.current(), $this]);
         return $this;
       },
       jumpTo: function(event, id) {
@@ -87,7 +87,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         }
         prevSlide = methods.current();
         _internals.jumpTo(id);
-        $this.trigger('circular:jumped', methods.current(), prevSlide, $this);
+        $this.trigger('circular:jumped', [methods.current(), prevSlide, $this]);
         return $this;
       },
       isRunning: function() {
@@ -100,7 +100,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         methods.currentControl().addClass('active');
         _slides.removeClass('active');
         methods.currentSlide().addClass('active');
-        return $this.trigger('circular:selected', methods.current(), $this);
+        return $this.trigger('circular:selected', [methods.current(), $this]);
       },
       next: function() {
         if (_current + 1 < _nbSlides) {
@@ -148,8 +148,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         });
         _current = to !== null ? to : _internals.next();
         nextSlide = methods.current();
-        $this.trigger('circular:fading', prevSlide, nextSlide, $this);
+        $this.trigger('circular:fading', [prevSlide, nextSlide, $this]);
         return faded.done(function() {
+          $this.trigger('circular:faded:out', [nextSlide, prevSlide, $this]);
           _internals.setActiveSlide();
           nextSlide.slide.queue(function(next) {
             $(this).fadeIn(delay);
