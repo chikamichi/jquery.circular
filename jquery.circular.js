@@ -126,7 +126,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           return false;
         }
       },
-      stopAllAnimations: function() {
+      finishAllAnimations: function() {
         return $.each(_slides, function(index, slide) {
           return $(slide).finish();
         });
@@ -139,7 +139,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         if (delay == null) {
           delay = _settings.transitionDelay;
         }
-        _internals.stopAllAnimations();
+        _internals.finishAllAnimations();
         prevSlide = methods.current();
         faded = null;
         prevSlide.slide.queue(function(next) {

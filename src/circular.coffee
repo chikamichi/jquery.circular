@@ -135,13 +135,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       else
         return false
 
-    stopAllAnimations: ->
+    finishAllAnimations: ->
       $.each(_slides, (index, slide) -> $(slide).finish())
 
     # TODO: refactor this so that it is possible to provide a custom
     # transition effect/logic.
+    # Use a custom $.fn.queue
     transitionTo: (to = null, delay = _settings.transitionDelay) ->
-      _internals.stopAllAnimations()
+      _internals.finishAllAnimations()
 
       prevSlide = methods.current()
       # FIXME: this assumes the controls are within the slides.
