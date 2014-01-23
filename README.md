@@ -9,13 +9,31 @@ jquery.circular
 
 [![Build Status](https://travis-ci.org/chikamichi/jquery.circular.png)](https://travis-ci.org/chikamichi/jquery.circular)
 
+This is a carousel library targeted at front-end **developers**.
+
+If you are:
+
+* pretty familiar with JavaScript
+* looking for a truly customizable carousel library
+* tired of tweaking (as in, re-writing) conceptually closed jQuery libraries
+* unwilling to waste time implementing your own carousel backend, though
+
+then, this may be of some interest to you.
+
 Default settings
 ----------------
 
 * 4s display per slide
-* 1s transition between slides
+* 1s fade-in/out transition between slides
 * starts on first slide (id == 0)
-* responsive-friendly DOM convention for slides and controls
+
+All of this is overridable. It also supports defining custom transitions, and
+it provides hooks to interfer with the carousel during its lifecycle.
+
+Don't fancy the default fade-in/out effect? Want something really *edge-casy*,
+like, say, sliding horizontally while altering opacity and displaying 3D
+animations of 2 random, alpha-blended slides taken from the slides set? I
+don't want to know why one would want that, but it *is* possible.
 
 Usage
 -----
@@ -24,8 +42,9 @@ Usage
 $('.wannabe-carousel').circular()
 ```
 
-with `.wannabe-carousel` a container for slides and slide's controls. By
-default, it would be of the following shape:
+with `.wannabe-carousel`, a container for some slides and slide's controls.
+
+It could be of the following shape:
 
 ``` haml
 %div.wannabe-carousel
@@ -40,6 +59,72 @@ default, it would be of the following shape:
     %li.control(data-id: 1)
       -# second slide's control
 ```
+
+If the carousel's structure changes during its lifecycle (adding/removing
+slides…), one must re-create the `circular` instance.
+
+Settings
+--------
+
+### aSlide
+
+Defines what maps to a slide. It is a [jQuery selector][selector] resolved
+within the container, so actually it could be anything within your 'body' if
+you'd like to.
+
+It is expected to be associated a [data-attribute][data-attribute], `data-id`,
+with a *unique* slide id within the slides set.
+
+*Default:* '.slides .slide'
+
+### aControl
+
+Defines what maps to a slide's control. Same as for `aSlide`.
+
+It is expected to be associated a data-attribute `data-id` matching one of the
+id provided by a slide from the matching slides set.
+
+*Default:* '.controls .control'
+
+### transitionDelay
+
+In milliseconds, the duration of the transition.
+
+It will be passed as `delay` to any custom animation function.
+
+*Default:* 1000
+
+### displayDuration
+
+In milliseconds, the duration of display.
+
+*Default:* 4000
+
+### startingPoint
+
+Defines which `data-id` to begin with.
+
+*Default:* 0
+
+### autoStart
+
+Whether to start running the carousel when initialized.
+
+*Default:* true
+
+### beforeStart
+
+A hook for you to interfer with the carousel before it gets started.
+
+Called at initialization time, just before `start()` (that is, will be called
+even if `autoStart` is `false`).
+
+*Arguments*:
+
+* currentSlide: the current slide's descriptor (see below)
+* $slides: jQuery selector for the slides set
+
+*Default:* empty hook
 
 Events
 ------
@@ -74,24 +159,13 @@ $('.wannabe-carousel').on('circular:init', function() {
 
 ### circular:jumped
 
-Triggerd by the default implementation of `jumpTo()` (see API below).
+Triggered by the default implementation of `jumpTo()` (see API below).
 
 
 ``` js
 $('.wannabe-carousel').on('circular:jumped', function(event, newSlide, prevSlide) {
   // newSlide is the newly active slide
   // prevSlide is the former active slide
-});
-```
-
-### circular:fading
-
-Triggered when the active slide is about to become unactive and "fade" out.
-
-``` js
-$('.wannabe-carousel').on('circular:fading', function(event, prevSlide, nextSlide) {
-  // prevSlide is the "fading" slide
-  // nextSlide is the slide about to become the selected one
 });
 ```
 
@@ -109,8 +183,30 @@ $('.wannabe-carousel').on('circular:selected', function(event, slide) {
   // slide is the selected slide
 });
 ```
+### circular:fading
 
-### circular:faded
+Triggered when the active slide is about to become inactive and replaced by
+another slide.
+
+``` js
+$('.wannabe-carousel').on('circular:fading', function(event, prevSlide, nextSlide) {
+  // prevSlide is the "fading" slide
+  // nextSlide is the slide about to become the selected one
+});
+```
+
+### circular:faded:out
+
+Triggered when a slide has completed its animation of "fading" out.
+
+``` js
+$('.wannabe-carousel').on('circular:faded', function(event, newSlide, prevSlide) {
+  // newSlide is the new active, visible slide
+  // prevSlide is the former active slide
+});
+```
+
+### circular:faded:in
 
 Triggered when a slide has been selected and has been made visible, after the
 transition's animation.
@@ -119,6 +215,20 @@ transition's animation.
 $('.wannabe-carousel').on('circular:faded', function(event, newSlide, prevSlide) {
   // newSlide is the new active, visible slide
   // prevSlide is the former active slide
+});
+```
+
+### circular:toSelf
+
+Triggered when an attempt to transitioning to the currently active slide has
+been made.
+
+The transition is invalid (nothing happpens), but this special event is fired
+to notify about the attempt.
+
+``` js
+$('.wannabe-carousel').on('circular:toSelf', function(event, slide) {
+  // slide is the selected slide
 });
 ```
 
@@ -233,9 +343,6 @@ About this plugin
 * Be overall complicated
 * Provide styles, pictures…
 
-"Trying" means those are my goals. For instance, it *does* (atm) make unfair
-assumptions about your DOM tree. Oh my!
-
 ### What it is trying to do
 
 * [KISS](http://en.wikipedia.org/wiki/KISS_principle)
@@ -246,7 +353,6 @@ assumptions about your DOM tree. Oh my!
 
 ### On the roadmap
 
-* Overridable transition effect/logic
 * Allow the slides and the controls to be anywhere in the DOM (fully
   data-\* based), removing any unfair assumption about your DOM tree
 * Some more events (started, stopped, maybe paused/resumed)
@@ -261,3 +367,6 @@ License
 -------
 
 MIT (see circular.coffee for details and credits/authorship).
+
+  [selector]: http://api.jquery.com/category/selectors/
+  [data-attribute]: http://api.jquery.com/data/

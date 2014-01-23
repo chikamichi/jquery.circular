@@ -24,7 +24,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     displayDuration: 4000
     startingPoint: 0
     autoStart: true
-    beforeStart: ($el, currentSlide, $slides) ->
+    beforeStart: (currentSlide, $slides) ->
 
   # FIXME: is that actually needed?
   _current = null
