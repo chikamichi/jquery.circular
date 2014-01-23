@@ -137,7 +137,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
     # TODO: refactor this so that it is possible to provide a custom
     # transition effect/logic.
-    transitionTo: (delay = _settings.transitionDelay, to = null) ->
+    transitionTo: (to = null, delay = _settings.transitionDelay) ->
       prevSlide = methods.current()
       # FIXME: this assumes the controls are within the slides.
       faded = prevSlide.slide.fadeOut(delay).promise()
@@ -153,14 +153,15 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:faded', nextSlide, prevSlide, $this)
 
     bindEvents: ->
-      # React upon a control being clicked: switch to its matching slide, reset
-      # the loop.
+      # React upon a control being clicked: switch to its matching slide.
+      #
+      # It resets the loop, which resumes from the new slide.
       $(_settings.aControl, $this).click methods.jumpTo
 
     jumpTo: (id) ->
       wasRunning = methods.isRunning()
       _internals.stop() if wasRunning
-      _internals.transitionTo(0, id)
+      _internals.transitionTo(id, 0)
       _internals.start() if wasRunning
       return false
 

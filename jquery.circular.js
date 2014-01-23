@@ -126,13 +126,13 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           return false;
         }
       },
-      transitionTo: function(delay, to) {
+      transitionTo: function(to, delay) {
         var faded, nextSlide, prevSlide;
-        if (delay == null) {
-          delay = _settings.transitionDelay;
-        }
         if (to == null) {
           to = null;
+        }
+        if (delay == null) {
+          delay = _settings.transitionDelay;
         }
         prevSlide = methods.current();
         faded = prevSlide.slide.fadeOut(delay).promise();
@@ -154,7 +154,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         if (wasRunning) {
           _internals.stop();
         }
-        _internals.transitionTo(0, id);
+        _internals.transitionTo(id, 0);
         if (wasRunning) {
           _internals.start();
         }
