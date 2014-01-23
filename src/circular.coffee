@@ -23,6 +23,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     transitionDelay: 1000
     displayDuration: 4000
     startingPoint: 0
+    autoStart: true
+    beforeStart: ($el, currentSlide, $slides) ->
 
   # FIXME: is that actually needed?
   _current = null
@@ -48,8 +50,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         _internals.setActiveSlide()
         $(_slides[_current]).fadeIn(_settings.transitionDelay)
         # Init the loop.
-        _internals.start()
         _internals.bindEvents()
+        _settings.beforeStart.call($this, methods.current(), $(_slides))
+        _internals.start() if _settings.autoStart
       else
         $(_settings.aControl, $this).hide()
 

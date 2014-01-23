@@ -25,7 +25,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       aControl: '.controls .control',
       transitionDelay: 1000,
       displayDuration: 4000,
-      startingPoint: 0
+      startingPoint: 0,
+      autoStart: true,
+      beforeStart: function($el, currentSlide, $slides) {}
     };
     _current = null;
     _slides = null;
@@ -44,8 +46,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           $(_slides).hide();
           _internals.setActiveSlide();
           $(_slides[_current]).fadeIn(_settings.transitionDelay);
-          _internals.start();
           _internals.bindEvents();
+          _settings.beforeStart.call($this, methods.current(), $(_slides));
+          if (_settings.autoStart) {
+            _internals.start();
+          }
         } else {
           $(_settings.aControl, $this).hide();
         }
