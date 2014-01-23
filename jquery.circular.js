@@ -183,7 +183,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return $(_settings.aControl, $this).click(methods.jumpTo);
       },
       jumpTo: function(id) {
-        var wasRunning;
+        var current, wasRunning;
+        current = methods.current();
+        if (id === current.id) {
+          $this.trigger('circular:toSelf', [current, $this]);
+          return;
+        }
         wasRunning = methods.isRunning();
         if (wasRunning) {
           _internals.stop();

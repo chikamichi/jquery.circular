@@ -181,6 +181,10 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       $(_settings.aControl, $this).click methods.jumpTo
 
     jumpTo: (id) ->
+      current = methods.current()
+      if id == current.id
+        $this.trigger('circular:toSelf', [current, $this])
+        return
       wasRunning = methods.isRunning()
       _internals.stop() if wasRunning
       _internals.transitionTo(id, 0)
