@@ -18,7 +18,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       return factory(root.jQuery);
     }
   })(this, function($) {
-    var $this, Lifecycle, methods, _booted, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
+    var $this, Lifecycle, methods, window, _booted, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
+    window = this;
     $this = void 0;
     _settings = {
       aSlide: '.slides .slide',
@@ -26,6 +27,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       transitionDelay: 1000,
       displayDuration: 4000,
       pauseOnHover: false,
+      directJump: false,
       startingPoint: 0,
       autoStart: true,
       beforeStart: function(currentSlide, $slides) {}
@@ -45,12 +47,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         _controls = $(_settings.aControl, $this);
         _nbSlides = _slides.size();
         if (_nbSlides > 1) {
-          $(_slides).hide();
+          methods.slides().hide();
           _internals.setActiveSlide();
           $(_slides[_current]).fadeIn(_settings.transitionDelay);
           _internals.initLifecycle();
           _internals.bindEvents();
-          _settings.beforeStart.call($this, methods.current(), $(_slides));
+          _settings.beforeStart.call($this, methods.current(), methods.slides());
           if (_settings.autoStart) {
             _internals.resume();
           }
@@ -75,6 +77,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           slide: slide,
           control: methods.currentControl()
         };
+      },
+      slides: function() {
+        return $(_slides);
+      },
+      controls: function() {
+        return $(_controls);
       },
       pause: function() {
         _internals.pause();
@@ -152,13 +160,13 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         });
       },
       effects: {
-        out: function() {
+        out: function(delay) {
           var _ref;
-          return ((_ref = _settings.effects) != null ? _ref.out.call(this) : void 0) || $.fn.fadeOut;
+          return ((_ref = _settings.effects) != null ? _ref.out.apply(this, arguments) : void 0) || $.fn.fadeOut;
         },
-        "in": function() {
+        "in": function(delay) {
           var _ref;
-          return ((_ref = _settings.effects) != null ? _ref["in"].call(this) : void 0) || $.fn.fadeIn;
+          return ((_ref = _settings.effects) != null ? _ref["in"].apply(this, arguments) : void 0) || $.fn.fadeIn;
         }
       },
       transitionTo: function(to, delay) {
@@ -174,7 +182,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         faded = null;
         prevSlide.slide.queue(function(next) {
           var effect;
-          effect = _internals.effects.out.call(this);
+          effect = _internals.effects.out.call(this, delay);
           faded = effect.call($(this), delay).promise();
           return next();
         });
@@ -186,7 +194,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           _internals.setActiveSlide();
           return nextSlide.slide.queue(function(next) {
             var effect;
-            effect = _internals.effects["in"].call(this);
+            effect = _internals.effects["in"].call(this, delay);
             effect.call($(this), delay).promise().done(function() {
               return $this.trigger('circular:faded:in', [nextSlide, prevSlide, $this]);
             });
@@ -204,17 +212,18 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         }
       },
       jumpTo: function(id) {
-        var current, wasRunning;
+        var current, delay, wasRunning;
         current = methods.current();
         if (id === current.id) {
           $this.trigger('circular:toSelf', [current, $this]);
           return;
         }
         wasRunning = methods.isRunning();
+        delay = _settings.directJump ? 0 : null;
         if (wasRunning) {
           _internals.pause();
         }
-        _internals.transitionTo(id, 0);
+        _internals.transitionTo(id, delay);
         if (wasRunning) {
           _internals.resume();
         }

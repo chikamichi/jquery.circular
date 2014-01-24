@@ -16,6 +16,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     # deps. fetched from the root object (aka. the browser context)
     factory root.jQuery
 ) this, ($) ->
+  window = @
   $this = undefined
   _settings =
     aSlide: '.slides .slide'
@@ -23,6 +24,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     transitionDelay: 1000
     displayDuration: 4000
     pauseOnHover: false
+    directJump: false
     startingPoint: 0
     autoStart: true
     beforeStart: (currentSlide, $slides) ->
@@ -48,14 +50,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       # Let's go…
       if _nbSlides > 1
         # Set the first slide right.
-        $(_slides).hide()
+        methods.slides().hide()
         _internals.setActiveSlide()
         $(_slides[_current]).fadeIn(_settings.transitionDelay)
         # Init the loop.
         _internals.initLifecycle()
         _internals.bindEvents()
         # Let's party.
-        _settings.beforeStart.call($this, methods.current(), $(_slides))
+        _settings.beforeStart.call($this, methods.current(), methods.slides())
         _internals.resume() if _settings.autoStart
       else
         $(_settings.aControl, $this).hide()
@@ -79,6 +81,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       id: slide.data('id')
       slide: slide
       control: methods.currentControl()
+
+    slides: ->
+      $(_slides)
+
+    controls: ->
+      $(_controls)
 
     pause: ->
       _internals.pause()
@@ -163,17 +171,18 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
     # TODO: it could prove useful to pass the animated slide descriptor?
     effects:
-      out: -> _settings.effects?.out.call(@) or $.fn.fadeOut
-      in: -> _settings.effects?.in.call(@) or $.fn.fadeIn
+      out: (delay) -> _settings.effects?.out.apply(@, arguments) or $.fn.fadeOut
+      in: (delay) -> _settings.effects?.in.apply(@, arguments) or $.fn.fadeIn
 
-    transitionTo: (to = null, delay = _settings.transitionDelay) ->
+    transitionTo: (to = null, delay) ->
+      delay ?= _settings.transitionDelay
       _internals.finishAllAnimations()
 
       prevSlide = methods.current()
       # FIXME: this assumes the controls are within the slides.
       faded = null
       prevSlide.slide.queue((next) ->
-        effect = _internals.effects.out.call(@)
+        effect = _internals.effects.out.call(@, delay)
         faded = effect.call($(@), delay).promise()
         next()
       )
@@ -186,7 +195,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:faded:out', [nextSlide, prevSlide, $this])
         _internals.setActiveSlide()
         nextSlide.slide.queue((next) ->
-          effect = _internals.effects.in.call(@)
+          effect = _internals.effects.in.call(@, delay)
           effect.call($(@), delay).promise().done ->
             $this.trigger('circular:faded:in', [nextSlide, prevSlide, $this])
           next()
@@ -196,11 +205,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       # React upon a control being clicked: switch to its matching slide.
       # It resets the loop, which resumes from the new slide.
       $(_settings.aControl, $this).click methods.jumpTo
+
+      # If the settings command it, let's pause on hover.
       if _settings.pauseOnHover
         pause = methods.pause
         resume = methods.resume
         $this.hover(pause, resume)
-
 
     jumpTo: (id) ->
       current = methods.current()
@@ -208,8 +218,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:toSelf', [current, $this])
         return
       wasRunning = methods.isRunning()
+      delay = if _settings.directJump then 0 else null
       _internals.pause() if wasRunning
-      _internals.transitionTo(id, 0)
+      _internals.transitionTo(id, delay)
       _internals.resume() if wasRunning
       return false
 

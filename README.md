@@ -100,6 +100,15 @@ In milliseconds, the duration of display.
 
 *Default:* `4000`
 
+### directJump
+
+Whether to skip animations when jumping to a slide using a control.
+
+Actually, this sets the `delay` parameter available to animations callbacks to
+the value `0`. Callbacks are free to implement any custom logic in this case.
+
+*Default:* `false`
+
 ### pauseOnHover
 
 Whether to pause the carousel when hovered.
