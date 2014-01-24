@@ -18,22 +18,24 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       return factory(root.jQuery);
     }
   })(this, function($) {
-    var $this, methods, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
+    var $this, Lifecycle, methods, _booted, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
     $this = void 0;
     _settings = {
       aSlide: '.slides .slide',
       aControl: '.controls .control',
       transitionDelay: 1000,
       displayDuration: 4000,
+      pauseOnHover: false,
       startingPoint: 0,
       autoStart: true,
-      beforeStart: function($el, currentSlide, $slides) {}
+      beforeStart: function(currentSlide, $slides) {}
     };
     _current = null;
     _slides = null;
     _controls = null;
     _nbSlides = null;
     _loop = null;
+    _booted = null;
     methods = {
       init: function(options) {
         $this = $(this);
@@ -46,14 +48,16 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           $(_slides).hide();
           _internals.setActiveSlide();
           $(_slides[_current]).fadeIn(_settings.transitionDelay);
+          _internals.initLifecycle();
           _internals.bindEvents();
           _settings.beforeStart.call($this, methods.current(), $(_slides));
           if (_settings.autoStart) {
-            _internals.start();
+            _internals.resume();
           }
         } else {
           $(_settings.aControl, $this).hide();
         }
+        _booted = true;
         $this.trigger('circular:init', [$this]);
         return $this;
       },
@@ -73,12 +77,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         };
       },
       pause: function() {
-        _internals.stop();
+        _internals.pause();
         $this.trigger('circular:paused', [methods.current(), $this]);
         return $this;
       },
       resume: function() {
-        _internals.start();
+        _internals.resume();
         $this.trigger('circular:resumed', [methods.current(), $this]);
         return $this;
       },
@@ -95,8 +99,14 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:jumped', [methods.current(), prevSlide, $this]);
         return $this;
       },
+      isAlive: function() {
+        return !!_booted;
+      },
       isRunning: function() {
-        return _loop !== null;
+        if (!_loop) {
+          return false;
+        }
+        return !_loop.isPaused();
       }
     };
     _internals = {
@@ -114,18 +124,23 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           return 0;
         }
       },
-      start: function() {
+      initLifecycle: function() {
+        if (_loop) {
+          return;
+        }
+        return _loop = new Lifecycle(_internals.transitionTo, _settings.transitionDelay + _settings.displayDuration);
+      },
+      resume: function() {
         if (!methods.isRunning()) {
-          _loop = setInterval(_internals.transitionTo, _settings.transitionDelay + _settings.displayDuration);
+          _loop.resume();
           return true;
         } else {
           return false;
         }
       },
-      stop: function() {
+      pause: function() {
         if (methods.isRunning()) {
-          clearInterval(_loop);
-          _loop = null;
+          _loop.pause();
           return true;
         } else {
           return false;
@@ -180,7 +195,13 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         });
       },
       bindEvents: function() {
-        return $(_settings.aControl, $this).click(methods.jumpTo);
+        var pause, resume;
+        $(_settings.aControl, $this).click(methods.jumpTo);
+        if (_settings.pauseOnHover) {
+          pause = methods.pause;
+          resume = methods.resume;
+          return $this.hover(pause, resume);
+        }
       },
       jumpTo: function(id) {
         var current, wasRunning;
@@ -191,14 +212,41 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         }
         wasRunning = methods.isRunning();
         if (wasRunning) {
-          _internals.stop();
+          _internals.pause();
         }
         _internals.transitionTo(id, 0);
         if (wasRunning) {
-          _internals.start();
+          _internals.resume();
         }
         return false;
       }
+    };
+    Lifecycle = function(callback, delay) {
+      var isPaused, paused, remaining, resume, start, timerId;
+      timerId = void 0;
+      start = void 0;
+      paused = true;
+      remaining = delay;
+      this.pause = function() {
+        clearTimeout(timerId);
+        paused = true;
+        return remaining -= new Date() - start;
+      };
+      resume = function() {
+        start = new Date();
+        paused = false;
+        return timerId = setTimeout(function() {
+          remaining = delay;
+          resume();
+          return callback();
+        }, remaining);
+      };
+      isPaused = function() {
+        return !!paused;
+      };
+      this.isPaused = isPaused;
+      this.resume = resume;
+      return this;
     };
     return $.fn.circular = function(method) {
       if (method === 'api') {

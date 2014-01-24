@@ -49,6 +49,9 @@ describe '$.fn.circular', ->
     it 'exposes jumpTo()', ->
       expect(@api).to.include('jumpTo')
 
+    it 'exposes isAlive()', ->
+      expect(@api).to.include('isAlive')
+
     it 'exposes isRunning()', ->
       expect(@api).to.include('isRunning')
 
@@ -62,6 +65,7 @@ describe '$.fn.circular', ->
 
     it 'runs fine', ->
       # No slide atm, so it won't run, but it's up at least
+      expect(@$carousel.circular('isAlive')).to.be.true
       expect(@$carousel.circular('isRunning')).not.to.be.true
 
   ## Called with expected DOM
@@ -73,6 +77,7 @@ describe '$.fn.circular', ->
       @$carousel.circular()
 
     it 'runs fine', ->
+      expect(@$carousel.circular('isAlive')).to.be.true
       expect(@$carousel.circular('isRunning')).to.be.true
 
   ## TODO: Called with custom DOM

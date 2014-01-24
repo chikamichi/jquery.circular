@@ -75,7 +75,7 @@ you'd like to.
 It is expected to be associated a [data-attribute][data-attribute], `data-id`,
 with a *unique* slide id within the slides set.
 
-*Default:* '.slides .slide'
+*Default:* `'.slides .slide'`
 
 ### aControl
 
@@ -84,7 +84,7 @@ Defines what maps to a slide's control. Same as for `aSlide`.
 It is expected to be associated a data-attribute `data-id` matching one of the
 id provided by a slide from the matching slides set.
 
-*Default:* '.controls .control'
+*Default:* `'.controls .control'`
 
 ### transitionDelay
 
@@ -92,25 +92,34 @@ In milliseconds, the duration of the transition.
 
 It will be passed as `delay` to any custom animation function.
 
-*Default:* 1000
+*Default:* `1000`
 
 ### displayDuration
 
 In milliseconds, the duration of display.
 
-*Default:* 4000
+*Default:* `4000`
+
+### pauseOnHover
+
+Whether to pause the carousel when hovered.
+
+It binds of the container. To implement custom behavior, bind to whatever you'd
+like using the `pause()` and `resume()` functions from the API.
+
+*Default:* `false`
 
 ### startingPoint
 
 Defines which `data-id` to begin with.
 
-*Default:* 0
+*Default:* `0`
 
 ### autoStart
 
 Whether to start running the carousel when initialized.
 
-*Default:* true
+*Default:* `true`
 
 ### beforeStart
 

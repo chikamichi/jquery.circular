@@ -22,6 +22,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     aControl: '.controls .control'
     transitionDelay: 1000
     displayDuration: 4000
+    pauseOnHover: false
     startingPoint: 0
     autoStart: true
     beforeStart: (currentSlide, $slides) ->
@@ -32,6 +33,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
   _controls = null
   _nbSlides = null
   _loop = null
+  _booted = null
 
   # Public API.
   methods =
@@ -50,12 +52,15 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         _internals.setActiveSlide()
         $(_slides[_current]).fadeIn(_settings.transitionDelay)
         # Init the loop.
+        _internals.initLifecycle()
         _internals.bindEvents()
+        # Let's party.
         _settings.beforeStart.call($this, methods.current(), $(_slides))
-        _internals.start() if _settings.autoStart
+        _internals.resume() if _settings.autoStart
       else
         $(_settings.aControl, $this).hide()
 
+      _booted = true
       $this.trigger('circular:init', [$this])
       return $this
 
@@ -76,12 +81,12 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       control: methods.currentControl()
 
     pause: ->
-      _internals.stop()
+      _internals.pause()
       $this.trigger('circular:paused', [methods.current(), $this])
       return $this
 
     resume: ->
-      _internals.start()
+      _internals.resume()
       $this.trigger('circular:resumed', [methods.current(), $this])
       return $this
 
@@ -93,8 +98,18 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       $this.trigger('circular:jumped', [methods.current(), prevSlide, $this])
       return $this
 
+    # Has a legacy carousel spawned?
+    #
+    # When there is no slide or only one, it returns false.
+    isAlive: ->
+      !!_booted
+
+    # Is the carousel running?
+    #
+    # When the carousel has been paused, or did not start, it returns false.
     isRunning: ->
-      _loop != null
+      return false if !_loop
+      !_loop.isPaused()
 
   # Private API.
   _internals =
@@ -116,29 +131,34 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       else
         0
 
+    initLifecycle: ->
+      return if _loop
+      _loop = new Lifecycle(
+        _internals.transitionTo,
+          _settings.transitionDelay + _settings.displayDuration)
+
     # Start the animation loop, if not already running.
     #
     # Returns whether the loop started or not.
-    start: ->
+    resume: ->
       if not methods.isRunning()
-        _loop = setInterval(_internals.transitionTo
-                , _settings.transitionDelay + _settings.displayDuration)
+        _loop.resume()
         return true
       else
         return false
 
-    # Stop the animation loop, if currently running.
+    # pause the animation loop, if currently running.
     #
-    # Returns whether the loop stopped or not.
-    stop: ->
+    # Returns whether the loop pauseped or not.
+    pause: ->
       if methods.isRunning()
-        clearInterval(_loop)
-        _loop = null
+        _loop.pause()
         return true
       else
         return false
 
     finishAllAnimations: ->
+      # FIXME: do this only if an animation is ongoing
       $.each(_slides, (index, slide) -> $(slide).finish())
 
     # TODO: it could prove useful to pass the animated slide descriptor?
@@ -146,10 +166,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       out: -> _settings.effects?.out.call(@) or $.fn.fadeOut
       in: -> _settings.effects?.in.call(@) or $.fn.fadeIn
 
-    # TODO: refactor this so that it is possible to provide a custom
-    # transition effect/logic.
     transitionTo: (to = null, delay = _settings.transitionDelay) ->
-      # FIXME: do this only if an animation is ongoing
       _internals.finishAllAnimations()
 
       prevSlide = methods.current()
@@ -179,6 +196,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       # React upon a control being clicked: switch to its matching slide.
       # It resets the loop, which resumes from the new slide.
       $(_settings.aControl, $this).click methods.jumpTo
+      if _settings.pauseOnHover
+        pause = methods.pause
+        resume = methods.resume
+        $this.hover(pause, resume)
+
 
     jumpTo: (id) ->
       current = methods.current()
@@ -186,10 +208,41 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         $this.trigger('circular:toSelf', [current, $this])
         return
       wasRunning = methods.isRunning()
-      _internals.stop() if wasRunning
+      _internals.pause() if wasRunning
       _internals.transitionTo(id, 0)
-      _internals.start() if wasRunning
+      _internals.resume() if wasRunning
       return false
+
+  # Carousel's lifecycle is handled by this object.
+  #
+  # Simple wrapper around a setTimeout to handle pause/resume.
+  Lifecycle = (callback, delay) ->
+    timerId = undefined
+    start = undefined
+    paused = true
+    remaining = delay
+
+    @pause = ->
+      clearTimeout timerId
+      paused = true
+      remaining -= new Date() - start
+
+    resume = ->
+      start = new Date()
+      paused = false
+      timerId = setTimeout(->
+        remaining = delay
+        resume()
+        callback()
+      , remaining)
+
+    isPaused = ->
+      !!paused
+
+    @isPaused = isPaused
+    @resume = resume
+
+    @
 
   $.fn.circular = (method) ->
     if method == 'api'
