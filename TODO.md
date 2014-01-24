@@ -4,3 +4,4 @@
   'jumped' events.
 * get rid of the assumption that controls are within slides' elements. Use
   absolute references to the DOM?
+* use https://github.com/vojtajina/grunt-bump
