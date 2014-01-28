@@ -9,12 +9,11 @@ jquery.circular
 
 [![Build Status](https://travis-ci.org/chikamichi/jquery.circular.png)](https://travis-ci.org/chikamichi/jquery.circular)
 
-This is a carousel library targeted at front-end **developers**.
+jquery.circular is a carousel backend library, targeted at front-end **developers**.
 
 If you are:
 
-* pretty familiar with JavaScript
-* looking for a truly customizable carousel library
+* looking for a fully customizable carousel library
 * tired of tweaking (as in, re-writing) conceptually closed jQuery libraries
 * unwilling to waste time implementing your own carousel backend, though
 
@@ -27,13 +26,17 @@ Default settings
 * 1s fade-in/out transition between slides
 * starts on first slide (id == 0)
 
-All of this is overridable. It also supports defining custom transitions, and
-it provides hooks to interfer with the carousel during its lifecycle.
+All of this is overridable. It supports defining custom transitions,
+provides hooks to interfer with the carousel during its lifecycle,
+exposes clean public and internal APIs.
 
-Don't fancy the default fade-in/out effect? Want something really *edge-casy*,
-like, say, sliding horizontally while altering opacity and displaying 3D
-animations of 2 random, alpha-blended slides taken from the slides set? I
-don't want to know why one would want that, but it *is* possible.
+Don't fancying the default fade-in/out effect? Want something more
+*edge-casy*, like, say… sliding horizontally movie trailers' slides,
+while altering opacity, while allowing to fade in a video fullscreen
+upon clicking a slide, pausing the carousel until it's resumed, and
+not forgetting to monitor in realt-time the trailer API so as to be
+able to feed the carousel in with the most recent additions? Not a
+problem!
 
 Usage
 -----
