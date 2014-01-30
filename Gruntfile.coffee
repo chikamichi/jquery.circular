@@ -29,6 +29,9 @@ module.exports = (grunt) ->
       test:
         options:
           reporter: 'spec'
+      dots:
+        options:
+          reporter: 'dot'
       options:
         compilers: ['coffee:coffee-script']
         files: ['test/**/*.coffee']
@@ -41,4 +44,4 @@ module.exports = (grunt) ->
   grunt.registerTask('test', 'mochacov:test')
 
   grunt.registerTask('default', 'watch')
-  grunt.registerTask('travis', ['check', 'test'])
+  grunt.registerTask('travis', ['check', 'mochacov:dots'])
