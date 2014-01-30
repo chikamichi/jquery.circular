@@ -173,9 +173,15 @@ and the inner functions are to be executed in the context of the moving
 slide (that is, the "current slide" while it's moving away, and the "next
  slide" while it's coming in).
 
-Promises allow for custom scheduling. For instance, to provide horizontal
-sliding animations, using a Backbone View and some CoffeeScript just
-because we can (and for a greater expressiveness/length ratio):
+Promises allow for custom scheduling. The general idea is that 
+`effects.in` will be called once `effects.out` is resolved. Some events are
+fired when promises are resolved as well. This is flexible enough to allow
+basically any scheduling, such as concurrent animations, delayed
+animations, or even reversed animations with a little more work.
+
+For instance, to provide horizontal sliding/fading animations, using a
+Backbone View and some CoffeeScript just because we can (and for
+a greater  expressiveness/length ratio):
 
 ``` coffee
 class Carousel extends Backbone.View
