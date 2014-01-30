@@ -80,11 +80,20 @@ describe '$.fn.circular', ->
     beforeEach ->
       @$body = factory(fullCarousel)
       @$carousel = @$body.find('.carousel')
-      @$carousel.circular()
 
     it 'runs fine', ->
+      @$carousel.circular()
       expect(@$carousel.circular('isAlive')).to.be.true
       expect(@$carousel.circular('isRunning')).to.be.true
+
+    it 'fires circular:init', (done) ->
+      @$carousel.on 'circular:init', (args...) =>
+        expect(args.length).to.equal 2
+        expect(args[0].type).to.equal 'circular:init'
+        expect(args[1].length).to.equal 1
+        expect(args[1].selector).to.equal @$carousel.selector
+        done()
+      @$carousel.circular()
 
   ## TODO: Called with custom DOM
   ## TODO: spec on events ordering / lifecycle
