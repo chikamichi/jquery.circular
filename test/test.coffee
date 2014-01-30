@@ -31,6 +31,12 @@ describe '$.fn.circular', ->
     it 'exposes init()', ->
       expect(@api).to.include('init')
 
+    it 'exposes slides()', ->
+      expect(@api).to.include('slides')
+
+    it 'exposes controls()', ->
+      expect(@api).to.include('controls')
+
     it 'exposes currentSlide()', ->
       expect(@api).to.include('currentSlide')
 
@@ -64,7 +70,7 @@ describe '$.fn.circular', ->
       @$carousel.circular()
 
     it 'runs fine', ->
-      # No slide atm, so it won't run, but it's up at least
+      # No slides, so it won't "run", but it's "up" at least.
       expect(@$carousel.circular('isAlive')).to.be.true
       expect(@$carousel.circular('isRunning')).not.to.be.true
 
