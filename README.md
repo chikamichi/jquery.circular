@@ -248,6 +248,10 @@ class Carousel extends Backbone.View
     else
       left: "#{offset}px"
       right: "-#{offset}px"
+
+$ ->
+  carousel = new Carousel
+    el: $('.wannabe-carousel').get(0)
 ```
 
 Hopefully this cumbersome example makes it more obvious how to use
