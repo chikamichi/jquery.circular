@@ -96,6 +96,7 @@ describe '$.fn.circular', ->
       @$carousel.circular()
 
     it 'can be paused', (done) ->
+      @$carousel.circular()
       @$carousel.on 'circular:paused', (args...) =>
         expect(args.length).to.equal 3
         expect(args[0].type).to.equal 'circular:paused'
@@ -105,8 +106,20 @@ describe '$.fn.circular', ->
         expect(@$carousel.circular('isAlive')).to.be.true
         expect(@$carousel.circular('isRunning')).to.be.false
         done()
-      @$carousel.circular()
       @$carousel.circular('pause')
+
+    it 'can be resumed', (done) ->
+      @$carousel.circular()
+      @$carousel.on 'circular:resumed', (args...) =>
+        expect(args.length).to.equal 3
+        expect(args[0].type).to.equal 'circular:resumed'
+        expect(args[1]).to.have.keys 'id', 'slide', 'control'
+        expect(args[2].length).to.equal 1
+        expect(args[2].selector).to.equal @$carousel.selector
+        expect(@$carousel.circular('isAlive')).to.be.true
+        expect(@$carousel.circular('isRunning')).to.be.true
+        done()
+      @$carousel.circular('resume')
 
   ## TODO: Called with custom DOM
   ## TODO: spec on events ordering / lifecycle
