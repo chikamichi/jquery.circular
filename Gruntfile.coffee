@@ -41,4 +41,4 @@ module.exports = (grunt) ->
   grunt.registerTask('test', 'mochacov:test')
 
   grunt.registerTask('default', 'watch')
-  grunt.registerTask('travis', ['check', 'mochacov:coverage'])
+  grunt.registerTask('travis', 'check')
