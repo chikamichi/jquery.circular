@@ -3,7 +3,7 @@ jquery.circular
 
 — *No! Not yet another fraking carousel library!*
 
-— Here, grab that cookie.
+— Here, grab that circular cookie.
 
 — *Oh? All right then.*
 
@@ -13,7 +13,7 @@ jquery.circular is a carousel backend library, targeted at front-end **developer
 
 If you are:
 
-* looking for a fully customizable carousel library
+* looking for a fully customizable, KISS carousel library
 * tired of tweaking (as in, re-writing) conceptually closed jQuery libraries
 * unwilling to waste time implementing your own carousel backend, though
 
@@ -31,12 +31,15 @@ provides hooks to interfer with the carousel during its lifecycle,
 exposes clean public and internal APIs.
 
 Don't fancying the default fade-in/out effect? Want something more
-*edge-casy*, like, say… sliding horizontally movie trailers' slides,
-while altering opacity, while allowing to fade in a video fullscreen
-upon clicking a slide, pausing the carousel until it's resumed, and
-not forgetting to monitor in realt-time the trailer API so as to be
-able to feed the carousel in with the most recent additions? Not a
-problem!
+*edge-casy*? Like, say…
+
+* sliding horizontally movie trailers' slides
+* while altering opacity
+* while allowing to fade to a video, fullscreen, upon clicking a slide
+* not forgetting to pause the carousel until it's resumed (closed the video)
+* while monitoring in real-time some trailer API so as to be able to feed the carousel in with the most recent additions
+
+It's problem: just wire things up around circular's backbone of API, hooks and events!
 
 Usage
 -----
@@ -64,7 +67,8 @@ It could be of the following shape:
 ```
 
 If the carousel's structure changes during its lifecycle (adding/removing
-slides…), one must re-create the `circular` instance.
+slides…), one must re-create the `circular` instance. This may change in
+the future (adding/removing slides and controls).
 
 Settings
 --------
@@ -265,7 +269,7 @@ $('.wannabe-carousel').on('circular:paused', function(event, currentSlide) {
 
 ### circular:resumed
 
-Triggered when the carousel has been paused by calling `resume()`.
+Triggered when the carousel has been resumed by calling `resume()`.
 
 ``` js
 $('.wannabe-carousel').on('circular:resumed', function(event, currentSlide) {
@@ -280,6 +284,22 @@ Public API
 
 Inits the carousel. It should not be called more than once, and will actually
 be ran automatically when calling `.circular()` on a jQuery matcher.
+
+### slides()
+
+Returns the slides set as a jQuery selector.
+
+``` js
+$('.wannabe-carousel').circular('slides')
+```
+
+### controls()
+
+Returns the slides' controls set as a jQuery selector.
+
+``` js
+$('.wannabe-carousel').circular('controls')
+```
 
 ### currentSlide()
 
@@ -328,23 +348,25 @@ $('.wannabe-carousel').circular('resume')
 
 This is an *event handler* implementing the business logic involved when jumping
 to a specific slide. By default, it relies on a default implementation that can
-be overriden, although it will probably just work as is.
+be overriden, although it will probably just be fine in most cases.
 
 Bind events to the `jumpTo` handler to add custom interactions support. It
 expects the DOM element you bind to to provide an `id` data-attribute matching
 the slide's id you want to jump to, but in case this is not possible, an
-explicit id can be passed as the second argument in the default implementation.
+explicit id can be passed as the second argument.
 
 This callback will *not* resume the carousel if it has been paused.
 
 ``` js
-// Why not enabling transitioning to the fourth slide by hovering its control?
+// Why not enabling transitioning to the fourth slide by hovering (default: clicking) its control?
 $('.slide-control[data-id="3"]').on('hover', $('.wannabe-carousel').circular('jumpTo'))
 
 // let's say we are able to pick a random number among the slides indexes, and
 // are willing to crazy-jump to it each time a div is clicked:
-id = randomSlideId()
-$('body').on('click', 'div', $('.wannabe-carousel').circular('jumpTo', id))
+$('body').on('click', 'div', function() {
+  id = getRandomSlideId()
+  $('.wannabe-carousel').circular('jumpTo', id);
+})
 ```
 
 ### isRunning()
