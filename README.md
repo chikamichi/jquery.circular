@@ -169,9 +169,9 @@ jQuery's Deferred API is designed).
 
 Implementations must be functions returning functions. They receive
 `delay`, the transition delay from the settings, as their sole argument,
-and are to be executed in the context of the moving slide (that is, the
-"current slide" while it's moving away, the "next slide" while it's coming
-in).
+and the inner functions are to be executed in the context of the moving
+slide (that is, the "current slide" while it's moving away, and the "next
+ slide" while it's coming in).
 
 Promises allow for custom scheduling. For instance, to provide horizontal
 sliding animations, using a Backbone View and some CoffeeScript just
