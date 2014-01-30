@@ -159,15 +159,22 @@ A transition between two slides occurs in a fixed fashion (at least for the
 time being): the current slide "moves away", then the next slide "comes in".
 In the default implementation, those two events are schedulded so that the
 slide that "comes in" waits for the slide that "moves away" to effectively
-vanish, in a fade out/fade animation. The scheduling is enforced by promises.
+vanish, in a fade out/fade in animation. The scheduling is enforced by
+promises.
 
 One can override the effects for the "moves away" (`effects.out`) and "comes
 in" (`effects.in`) animations, as long as the implementations are exposed
-wrapped in deferrables exposing a `promise()` accessor, in the same way that
-jQuery's Deferred API is designed.
+wrapped in deferrables exposing a `promise()` accessor (in the same way that
+jQuery's Deferred API is designed).
 
-This allows for custom scheduling. For instance, to provide horizontal
-sliding animations, using a Backbone View and some coffeescript just
+Implementations must be functions returning functions. They receive
+`delay`, the transition delay from the settings, as their sole argument,
+and are to be executed in the context of the moving slide (that is, the
+"current slide" while it's moving away, the "next slide" while it's coming
+in).
+
+Promises allow for custom scheduling. For instance, to provide horizontal
+sliding animations, using a Backbone View and some CoffeeScript just
 because we can (and for a greater expressiveness/length ratio):
 
 ``` coffee
@@ -221,6 +228,10 @@ class Carousel extends Backbone.View
     ->
       $(@).animate(carousel.pos(0), delay)
 
+  # Where to place a slide, using left/right offsets.
+  # A "lefty" slide is to be positionned on the left side of the
+  # carousel's container, a "righty" one (default case)… on
+  # the right side.
   pos: (offset, lefty = false) ->
     if offset == 0
       left: 0
@@ -234,8 +245,8 @@ class Carousel extends Backbone.View
 ```
 
 Hopefully this cumbersome example makes it more obvious how to use
-circular's API to implement custom behavior while relying on its
-core loop implementation.
+circular's API to implement custom behavior, while relying on its
+core loop implementation to orchestrate the carousel's lifecycle.
 
 Events
 ------
