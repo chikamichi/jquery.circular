@@ -120,7 +120,7 @@ the value `0`. Callbacks are free to implement any custom logic in this case.
 
 Whether to pause the carousel when hovered.
 
-It binds of the container. To implement custom behavior, bind to whatever you'd
+It binds to the container. To implement custom behavior, bind to whatever you'd
 like using the `pause()` and `resume()` functions from the API.
 
 *Default:* `false`
@@ -150,6 +150,92 @@ even if `autoStart` is `false`).
 * $slides: jQuery selector for the slides set
 
 *Default:* empty hook
+
+### effects: in|out
+
+Implement custom animations for the transitions.
+
+A transition between two slides occurs in a fixed fashion (at least for the
+time being): the current slide "moves away", then the next slide "comes in".
+In the default implementation, those two events are schedulded so that the
+slide that "comes in" waits for the slide that "moves away" to effectively
+vanish, in a fade out/fade animation. The scheduling is enforced by promises.
+
+One can override the effects for the "moves away" (`effects.out`) and "comes
+in" (`effects.in`) animations, as long as the implementations are exposed
+wrapped in deferrables exposing a `promise()` accessor, in the same way that
+jQuery's Deferred API is designed.
+
+This allows for custom scheduling. For instance, to provide horizontal
+sliding animations, using a Backbone View and some coffeescript just
+because we can (and for a greater expressiveness/length ratio):
+
+``` coffee
+class Carousel extends Backbone.View
+  render: ->
+    @$el.circular
+      beforeStart: @prepare
+      effects:
+        out: @slideOut
+        in: @slideIn
+    @
+    
+  # Prepare the carousel for our custom transition effect, that is,
+  # horizontal sliding where order does not matter.
+  prepare: (currentSlide, $slides) =>
+    w = currentSlide.slide.width()
+    h = currentSlide.slide.height()
+    # Set dimensions of the carousel's container, for slides will be
+    # in absolute position.
+    @$el.css
+      height: "#{h}px"
+      overflow: 'hidden'
+    # Move all slides to the right, but the first one.
+    $slides.css _({position: 'absolute'}).extend(@pos(w))
+    currentSlide.slide.css @pos(0)
+    $slides.show()
+    
+  # A slide must go away. It's currently visible, let's slide it horizontally
+  # to the left, then reset its position to the right.
+  #
+  # Note: the surrounding deferred allows to decouple the sliding effect from
+  # the transition lifecycle. In our custom transition effect, we want the
+  # next slide to slide in *right away*, not until after the current slide has
+  # slided out completely.
+  slideOut: (delay) =>
+    carousel = @
+    processing = $.Deferred()
+    ->
+      w = $(@).width()
+      cssStep1 = _(carousel.pos(w, true)).extend({opacity: 0.2})
+      cssStep2 = _(carousel.pos(w)).extend({opacity: 1})
+      $(@).animate(cssStep1, delay)
+          .promise().done -> $(@).css(cssStep2)
+      processing.resolve()
+      processing
+
+  # A slide must be displayed. It's currently hidden to the right, let's slide
+  # it horizontally to the original position.
+  slideIn: (delay) =>
+    carousel = @
+    ->
+      $(@).animate(carousel.pos(0), delay)
+
+  pos: (offset, lefty = false) ->
+    if offset == 0
+      left: 0
+      right: 0
+    else if lefty
+      left: "-#{offset}px"
+      right: "#{offset}px"
+    else
+      left: "#{offset}px"
+      right: "-#{offset}px"
+```
+
+Hopefully this cumbersome example makes it more obvious how to use
+circular's API to implement custom behavior while relying on its
+core loop implementation.
 
 Events
 ------
