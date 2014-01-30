@@ -39,7 +39,7 @@ Don't fancying the default fade-in/out effect? Want something more
 * not forgetting to pause the carousel until it's resumed (closed the video)
 * while monitoring in real-time some trailer API so as to be able to feed the carousel in with the most recent additions
 
-It's problem: just wire things up around circular's backbone of API, hooks and events!
+It's straightforward: just wire things up, leveraging circular's backbone (its API, hooks and events).
 
 Usage
 -----
