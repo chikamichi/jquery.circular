@@ -476,6 +476,14 @@ $('body').on('click', 'div', function() {
 })
 ```
 
+### isAlive()
+
+Checks whether the carousel booted and is alive and well.
+
+``` js
+$('.wannabe-carousel').circular('isAlive')
+```
+
 ### isRunning()
 
 Checks whether the carousel's internal loop is running.
