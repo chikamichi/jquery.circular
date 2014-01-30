@@ -1,3 +1,4 @@
+* fix version number in src/carousel.coffee
 * create src/carousel.effects.coffee to store some custom effects; add examples in the README
 * fix Travis build (ok in local)
 * grunt-karma + karma-mocha + Istanbul for coverage
