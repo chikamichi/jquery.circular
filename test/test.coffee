@@ -118,6 +118,14 @@ describe '$.fn.circular', ->
       @$carousel.circular()
 
     describe 'handles settings:', ->
+      it 'the slides selector defaults to ".slides .slide"', ->
+        @$carousel.circular()
+        expect(@$carousel.circular('settings').aSlide).to.equal '.slides .slide'
+
+      it 'the controls selector defaults to ".controls .control"', ->
+        @$carousel.circular()
+        expect(@$carousel.circular('settings').aControl).to.equal '.controls .control'
+
       it 'autoStart is true by default', ->
         _resume = sinon.spy $.fn.circular.private, 'resume'
         @$carousel.circular()
