@@ -138,6 +138,14 @@ describe '$.fn.circular', ->
         expect(@$carousel.circular('settings').aControl).to.equal '.bar'
         expect(@$carousel.circular('controls').selector).to.equal '.carousel .bar'
 
+      it 'the transition delay defaults to 1000ms', ->
+        @$carousel.circular()
+        expect(@$carousel.circular('settings').transitionDelay).to.equal 1000
+
+      it 'the transition delay can be overriden', ->
+        @$carousel.circular({transitionDelay: 250})
+        expect(@$carousel.circular('settings').transitionDelay).to.equal 250
+
       it 'autoStart is true by default', ->
         _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular()
