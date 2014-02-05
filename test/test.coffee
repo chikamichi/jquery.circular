@@ -226,6 +226,19 @@ describe '$.fn.circular', ->
         expect(@$carousel.circular('isRunning')).to.be.false
         @$carousel.circular('_internals').resume.restore()
 
+      it 'a beforeStart hook is available', (done) ->
+        hooks =
+          beforeStart: (current, slides) ->
+        _hooks = mock(hooks)
+        _hooks.expects('beforeStart').once()
+        @$carousel.on 'circular:init', =>
+          #current = @$carousel.circular('current')
+          #slides = @$carousel.circular('slides')
+          #_hooks.expects('beforeStart').once().on(@$carousel).withArgs(current, slides)
+          _hooks.verify()
+          done()
+        @$carousel.circular({beforeStart: hooks.beforeStart})
+
     it 'can be paused', (done) ->
       @$carousel.circular()
       @$carousel.on 'circular:paused', (args...) =>
