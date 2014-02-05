@@ -37,6 +37,9 @@ describe '$.fn.circular', ->
       @$fake = undefined
       @api = undefined
 
+    it 'exposes its settings', ->
+      expect(@api).to.include('settings')
+
     it 'exposes init()', ->
       expect(@api).to.include('init')
 

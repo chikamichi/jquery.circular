@@ -39,6 +39,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
   # Public API.
   methods =
+    settings: ->
+      if _booted then _settings else undefined
+
     init: (options) ->
       $this = $(@)
       $.extend true, _settings, (options or {})

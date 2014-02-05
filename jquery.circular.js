@@ -39,6 +39,13 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     _loop = null;
     _booted = null;
     methods = {
+      settings: function() {
+        if (_booted) {
+          return _settings;
+        } else {
+          return void 0;
+        }
+      },
       init: function(options) {
         $this = $(this);
         $.extend(true, _settings, options || {});
