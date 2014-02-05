@@ -148,7 +148,6 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return _loop = new Lifecycle(_internals.transitionTo, _settings.transitionDelay + _settings.displayDuration);
       },
       resume: function() {
-        console.log('_internals#resume');
         if (!methods.isRunning()) {
           _loop.resume();
           return true;

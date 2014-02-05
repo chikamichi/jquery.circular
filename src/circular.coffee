@@ -153,7 +153,6 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     #
     # Returns whether the loop started or not.
     resume: ->
-      console.log '_internals#resume'
       if not methods.isRunning()
         _loop.resume()
         return true
