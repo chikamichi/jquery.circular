@@ -1,5 +1,7 @@
 chai = require('chai')
 sinon = require('sinon')
+spy = sinon.spy
+mock = sinon.mock
 sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 jQuery = $ = require('jquery')
@@ -151,7 +153,7 @@ describe '$.fn.circular', ->
         expect(@$carousel.circular('settings').displayDuration).to.equal 4000
 
       it 'pausing on hover is disabled by default', (done) ->
-        _hover = sinon.spy $.fn, 'hover'
+        _hover = spy $.fn, 'hover'
         @$carousel.mouseenter =>
           expect(@$carousel.circular('isRunning')).to.be.true
           done()
@@ -164,26 +166,49 @@ describe '$.fn.circular', ->
         @$carousel.circular()
 
       it 'pausing on hover can be enabled', (done) ->
-        _hover = sinon.spy $.fn, 'hover'
+        _hover = spy $.fn, 'hover'
         @$carousel.on 'circular:init', =>
           @$carousel.on 'circular:paused', =>
             expect(@$carousel.circular('isRunning')).to.be.false
             done()
+          # FIXME: use .withArgs?
           expect(_hover).to.have.been.calledOnce
           expect(_hover).to.have.been.calledWith(@$carousel.circular('methods').pause, @$carousel.circular('methods').resume)
           @$carousel.hover.restore()
           @$carousel.mouseenter()
         @$carousel.circular({pauseOnHover: true})
 
+      it 'direct jump (transitionDelay enforced to 0) is disabled by default', (done) ->
+        _internals = null
+        @$carousel.on 'circular:jumped', ->
+          _internals.verify()
+          done()
+        @$carousel.on 'circular:init', =>
+          _internals = mock(@$carousel.circular('_internals'))
+          _internals.expects('transitionTo').once().withArgs(1, null)
+          $(@$carousel.circular('controls')[1]).click()
+        @$carousel.circular()
+
+      it 'direct jump can be enabled', (done) ->
+        _internals = null
+        @$carousel.on 'circular:jumped', ->
+          _internals.verify()
+          done()
+        @$carousel.on 'circular:init', =>
+          _internals = mock(@$carousel.circular('_internals'))
+          _internals.expects('transitionTo').once().withArgs(1, 0)
+          $(@$carousel.circular('controls')[1]).click()
+        @$carousel.circular({directJump: true})
+
       it 'autoStart is true by default', ->
-        _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
+        _resume = spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular()
         expect(_resume).to.have.been.calledOnce
         expect(@$carousel.circular('isRunning')).to.be.true
         @$carousel.circular('_internals').resume.restore()
 
       it 'autoStart can be set to false', ->
-        _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
+        _resume = spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular({autoStart: false})
         expect(_resume).to.not.have.been.called
         expect(@$carousel.circular('isRunning')).to.be.false
