@@ -271,6 +271,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return Object.keys(methods);
       } else if ($.fn.circular.test && method === '_internals') {
         return _internals;
+      } else if ($.fn.circular.test && method === 'methods') {
+        return methods;
       } else if (methods[method]) {
         return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
       } else if (typeof method === 'object' || !method) {

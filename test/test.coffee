@@ -150,6 +150,31 @@ describe '$.fn.circular', ->
         @$carousel.circular()
         expect(@$carousel.circular('settings').displayDuration).to.equal 4000
 
+      it 'pausing on hover is disabled by default', (done) ->
+        _hover = sinon.spy $.fn, 'hover'
+        @$carousel.mouseenter =>
+          expect(@$carousel.circular('isRunning')).to.be.true
+          done()
+        @$carousel.on 'circular:init', =>
+          expect(@$carousel.circular('settings').pauseOnHover).to.equal false
+          expect(@$carousel.circular('isRunning')).to.be.true
+          expect(_hover).to.not.have.been.called
+          @$carousel.hover.restore()
+          @$carousel.mouseenter()
+        @$carousel.circular()
+
+      it 'pausing on hover can be enabled', (done) ->
+        _hover = sinon.spy $.fn, 'hover'
+        @$carousel.on 'circular:init', =>
+          @$carousel.on 'circular:paused', =>
+            expect(@$carousel.circular('isRunning')).to.be.false
+            done()
+          expect(_hover).to.have.been.calledOnce
+          expect(_hover).to.have.been.calledWith(@$carousel.circular('methods').pause, @$carousel.circular('methods').resume)
+          @$carousel.hover.restore()
+          @$carousel.mouseenter()
+        @$carousel.circular({pauseOnHover: true})
+
       it 'the transition delay can be overriden', ->
         @$carousel.circular({displayDuration: 1250})
         expect(@$carousel.circular('settings').displayDuration).to.equal 1250

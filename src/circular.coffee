@@ -264,6 +264,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       Object.keys(methods)
     else if $.fn.circular.test and method is '_internals'
       _internals
+    else if $.fn.circular.test and method is 'methods'
+      methods
     else if methods[method]
       methods[method].apply @, Array::slice.call(arguments, 1)
     else if typeof method is 'object' or not method
