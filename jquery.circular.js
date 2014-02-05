@@ -52,6 +52,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
           $(_slides[_current]).fadeIn(_settings.transitionDelay);
           _internals.initLifecycle();
           _internals.bindEvents();
+          methods.pause();
           _settings.beforeStart.call($this, methods.current(), methods.slides());
           if (_settings.autoStart) {
             _internals.resume();
@@ -257,7 +258,10 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       this.resume = resume;
       return this;
     };
-    return $.fn.circular = function(method) {
+    $.fn.circular = function(method) {
+      if (!$.fn.circular.test) {
+        $.fn.circular["private"] = void 0;
+      }
       if (method === 'api') {
         return Object.keys(methods);
       } else if (methods[method]) {
@@ -268,6 +272,8 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return $.error('Method ' + method + ' does not exist on jquery.circular');
       }
     };
+    $.fn.circular["public"] = methods;
+    return $.fn.circular["private"] = _internals;
   });
 
 }).call(this);

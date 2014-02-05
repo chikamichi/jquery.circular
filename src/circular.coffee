@@ -56,6 +56,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         # Init the loop.
         _internals.initLifecycle()
         _internals.bindEvents()
+        methods.pause()
         # Let's party.
         _settings.beforeStart.call($this, methods.current(), methods.slides())
         _internals.resume() if _settings.autoStart
@@ -256,6 +257,9 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     @
 
   $.fn.circular = (method) ->
+    unless $.fn.circular.test
+      $.fn.circular.private = undefined
+
     if method == 'api'
       Object.keys(methods)
     else if methods[method]
@@ -264,3 +268,6 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       methods.init.apply @, arguments
     else
       $.error 'Method ' + method + ' does not exist on jquery.circular'
+
+  $.fn.circular.public = methods
+  $.fn.circular.private = _internals

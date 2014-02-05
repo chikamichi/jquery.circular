@@ -1,5 +1,7 @@
 chai = require('chai')
 sinon = require('sinon')
+sinonChai = require('sinon-chai')
+chai.use(sinonChai)
 jQuery = $ = require('jquery')
 
 require ('../build/circular')
@@ -7,12 +9,14 @@ require ('../build/circular')
 assert = chai.assert
 expect = chai.expect
 
-emptyBody = '<html><body></body></html>'
-emptyCarousel = '<html><body><div class="carousel"></div></body></html>'
-fullCarousel = '<html><body><div class="carousel"><ul class="slides"><li class="slide" data-id=0>slide 1</li><li class="slide" data-id=1>slide 2</li></ul><ul class="controls"><li class="control" data-id=0>control 1</li><li class="control" data-id=1>control 1</li></ul></div></body></html>'
+emptyBody = '<body></body>'
+emptyCarousel = '<body><div class="carousel"></div></body>'
+fullCarousel = '<body><div class="carousel"><ul class="slides"><li class="slide" data-id=0>slide 1</li><li class="slide" data-id=1>slide 2</li></ul><ul class="controls"><li class="control" data-id=0>control 1</li><li class="control" data-id=1>control 1</li></ul></div></body>'
 
 factory = (dom) ->
-  $(dom)
+  $('<html>').html(dom)
+
+$.fn.circular.test = true
 
 describe '$.fn.circular', ->
   describe 'ok, it…', ->
@@ -27,6 +31,11 @@ describe '$.fn.circular', ->
       @$fake = $()
       @$fake.circular()
       @api = @$fake.circular('api')
+
+    # Not mandatory, but cleaning is always nice.
+    afterEach ->
+      @$fake = undefined
+      @api = undefined
 
     it 'exposes init()', ->
       expect(@api).to.include('init')
@@ -69,6 +78,11 @@ describe '$.fn.circular', ->
       @$carousel = @$body.find('.carousel')
       @$carousel.circular()
 
+    # Not mandatory, but cleaning is always nice.
+    afterEach ->
+      @$body = undefined
+      @$carousel = undefined
+
     it 'runs fine', ->
       # No slides, so it won't "run", but it's "up" at least.
       expect(@$carousel.circular('isAlive')).to.be.true
@@ -80,6 +94,11 @@ describe '$.fn.circular', ->
     beforeEach ->
       @$body = factory(fullCarousel)
       @$carousel = @$body.find('.carousel')
+
+    # Not mandatory, but cleaning is always nice.
+    afterEach ->
+      @$body = undefined
+      @$carousel = undefined
 
     it 'runs fine', ->
       @$carousel.circular()
@@ -95,6 +114,21 @@ describe '$.fn.circular', ->
         done()
       @$carousel.circular()
 
+    describe 'handles settings:', ->
+      it 'autoStart is true by default', ->
+        _resume = sinon.spy $.fn.circular.private, 'resume'
+        @$carousel.circular()
+        expect(_resume).to.have.been.calledOnce
+        expect(@$carousel.circular('isRunning')).to.be.true
+        $.fn.circular.private.resume.restore()
+
+      it 'autoStart can be set to false', ->
+        _resume = sinon.spy $.fn.circular.private, 'resume'
+        @$carousel.circular({autoStart: false})
+        expect(_resume).to.not.have.been.called
+        expect(@$carousel.circular('isRunning')).to.be.false
+        $.fn.circular.private.resume.restore()
+
     it 'can be paused', (done) ->
       @$carousel.circular()
       @$carousel.on 'circular:paused', (args...) =>
@@ -108,6 +142,7 @@ describe '$.fn.circular', ->
         done()
       @$carousel.circular('pause')
 
+    # TODO: use sinon.spy to monitor $.fn.circular.private.* calls
     it 'can be resumed', (done) ->
       @$carousel.circular()
       @$carousel.on 'circular:resumed', (args...) =>
