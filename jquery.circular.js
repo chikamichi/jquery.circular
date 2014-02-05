@@ -18,10 +18,10 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       return factory(root.jQuery);
     }
   })(this, function($) {
-    var $this, Lifecycle, methods, window, _booted, _controls, _current, _internals, _loop, _nbSlides, _settings, _slides;
+    var $this, Lifecycle, methods, window, _booted, _controls, _current, _defaultSettings, _internals, _loop, _nbSlides, _settings, _slides;
     window = this;
     $this = void 0;
-    _settings = {
+    _defaultSettings = {
       aSlide: '.slides .slide',
       aControl: '.controls .control',
       transitionDelay: 1000,
@@ -32,6 +32,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       autoStart: true,
       beforeStart: function(currentSlide, $slides) {}
     };
+    _settings = null;
     _current = null;
     _slides = null;
     _controls = null;
@@ -48,7 +49,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       },
       init: function(options) {
         $this = $(this);
-        $.extend(true, _settings, options || {});
+        _settings = $.extend(true, {}, _defaultSettings, options || {});
         _current = _settings.startingPoint;
         _slides = $(_settings.aSlide, $this);
         _controls = $(_settings.aControl, $this);
@@ -147,6 +148,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return _loop = new Lifecycle(_internals.transitionTo, _settings.transitionDelay + _settings.displayDuration);
       },
       resume: function() {
+        console.log('_internals#resume');
         if (!methods.isRunning()) {
           _loop.resume();
           return true;
@@ -265,12 +267,11 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
       this.resume = resume;
       return this;
     };
-    $.fn.circular = function(method) {
-      if (!$.fn.circular.test) {
-        $.fn.circular["private"] = void 0;
-      }
+    return $.fn.circular = function(method) {
       if (method === 'api') {
         return Object.keys(methods);
+      } else if ($.fn.circular.test && method === '_internals') {
+        return _internals;
       } else if (methods[method]) {
         return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
       } else if (typeof method === 'object' || !method) {
@@ -279,8 +280,6 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
         return $.error('Method ' + method + ' does not exist on jquery.circular');
       }
     };
-    $.fn.circular["public"] = methods;
-    return $.fn.circular["private"] = _internals;
   });
 
 }).call(this);

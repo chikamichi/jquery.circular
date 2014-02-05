@@ -100,8 +100,8 @@ describe '$.fn.circular', ->
 
     # Not mandatory, but cleaning is always nice.
     afterEach ->
-      @$body = undefined
       @$carousel = undefined
+      @$body = undefined
 
     it 'runs fine', ->
       @$carousel.circular()
@@ -121,24 +121,36 @@ describe '$.fn.circular', ->
       it 'the slides selector defaults to ".slides .slide"', ->
         @$carousel.circular()
         expect(@$carousel.circular('settings').aSlide).to.equal '.slides .slide'
+        expect(@$carousel.circular('slides').selector).to.equal '.carousel .slides .slide'
 
       it 'the controls selector defaults to ".controls .control"', ->
         @$carousel.circular()
         expect(@$carousel.circular('settings').aControl).to.equal '.controls .control'
+        expect(@$carousel.circular('controls').selector).to.equal '.carousel .controls .control'
+
+      it 'the slides selector can be overriden', ->
+        @$carousel.circular({aSlide: '.foo'})
+        expect(@$carousel.circular('settings').aSlide).to.equal '.foo'
+        expect(@$carousel.circular('slides').selector).to.equal '.carousel .foo'
+
+      it 'the controls selector can be overriden', ->
+        @$carousel.circular({aControl: '.bar'})
+        expect(@$carousel.circular('settings').aControl).to.equal '.bar'
+        expect(@$carousel.circular('controls').selector).to.equal '.carousel .bar'
 
       it 'autoStart is true by default', ->
-        _resume = sinon.spy $.fn.circular.private, 'resume'
+        _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular()
         expect(_resume).to.have.been.calledOnce
         expect(@$carousel.circular('isRunning')).to.be.true
-        $.fn.circular.private.resume.restore()
+        @$carousel.circular('_internals').resume.restore()
 
       it 'autoStart can be set to false', ->
-        _resume = sinon.spy $.fn.circular.private, 'resume'
+        _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular({autoStart: false})
         expect(_resume).to.not.have.been.called
         expect(@$carousel.circular('isRunning')).to.be.false
-        $.fn.circular.private.resume.restore()
+        @$carousel.circular('_internals').resume.restore()
 
     it 'can be paused', (done) ->
       @$carousel.circular()
@@ -153,7 +165,6 @@ describe '$.fn.circular', ->
         done()
       @$carousel.circular('pause')
 
-    # TODO: use sinon.spy to monitor $.fn.circular.private.* calls
     it 'can be resumed', (done) ->
       @$carousel.circular()
       @$carousel.on 'circular:resumed', (args...) =>

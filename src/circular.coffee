@@ -18,7 +18,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 ) this, ($) ->
   window = @
   $this = undefined
-  _settings =
+  _defaultSettings =
     aSlide: '.slides .slide'
     aControl: '.controls .control'
     transitionDelay: 1000
@@ -29,7 +29,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     autoStart: true
     beforeStart: (currentSlide, $slides) ->
 
-  # FIXME: is that actually needed?
+  _settings = null
   _current = null
   _slides = null
   _controls = null
@@ -44,7 +44,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
 
     init: (options) ->
       $this = $(@)
-      $.extend true, _settings, (options or {})
+      _settings = $.extend true, {}, _defaultSettings, (options or {})
       _current = _settings.startingPoint
       _slides = $(_settings.aSlide, $this)
       _controls = $(_settings.aControl, $this)
@@ -153,6 +153,7 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     #
     # Returns whether the loop started or not.
     resume: ->
+      console.log '_internals#resume'
       if not methods.isRunning()
         _loop.resume()
         return true
@@ -260,17 +261,13 @@ Licensed under the MIT licenses: http://www.opensource.org/licenses/mit-license.
     @
 
   $.fn.circular = (method) ->
-    unless $.fn.circular.test
-      $.fn.circular.private = undefined
-
     if method == 'api'
       Object.keys(methods)
+    else if $.fn.circular.test and method is '_internals'
+      _internals
     else if methods[method]
       methods[method].apply @, Array::slice.call(arguments, 1)
     else if typeof method is 'object' or not method
       methods.init.apply @, arguments
     else
       $.error 'Method ' + method + ' does not exist on jquery.circular'
-
-  $.fn.circular.public = methods
-  $.fn.circular.private = _internals
