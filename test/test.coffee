@@ -200,6 +200,18 @@ describe '$.fn.circular', ->
           $(@$carousel.circular('controls')[1]).click()
         @$carousel.circular({directJump: true})
 
+      it 'the starting point defaults to the slide of id "0"', (done) ->
+        @$carousel.on 'circular:init', =>
+          expect(@$carousel.circular('current').id).to.equal 0
+          done()
+        @$carousel.circular()
+
+      it 'the starting point can be overriden', (done) ->
+        @$carousel.on 'circular:init', =>
+          expect(@$carousel.circular('current').id).to.equal 1
+          done()
+        @$carousel.circular({startingPoint: 1})
+
       it 'autoStart is true by default', ->
         _resume = spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular()
