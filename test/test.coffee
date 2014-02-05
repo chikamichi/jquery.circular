@@ -175,10 +175,6 @@ describe '$.fn.circular', ->
           @$carousel.mouseenter()
         @$carousel.circular({pauseOnHover: true})
 
-      it 'the transition delay can be overriden', ->
-        @$carousel.circular({displayDuration: 1250})
-        expect(@$carousel.circular('settings').displayDuration).to.equal 1250
-
       it 'autoStart is true by default', ->
         _resume = sinon.spy @$carousel.circular('_internals'), 'resume'
         @$carousel.circular()
