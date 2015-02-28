@@ -1,6 +1,6 @@
 {
   "name": "jquery.circular",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "jquery.circular.js",
   "repository": "https://github.com/chikamichi/jquery.circular",
   "ignore": [
@@ -28,7 +28,9 @@
   "scripts": {
     "test": "grunt travis --verbose",
     "blanket": {
-      "pattern": ["build"]
+      "pattern": [
+        "build"
+      ]
     }
   },
   "engines": {
