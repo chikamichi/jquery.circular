@@ -9,7 +9,8 @@
     "components"
   ],
   "keywords": [
-    "jquery",
+    "jquery-plugin",
+    "ecosystem:jquery",
     "ui",
     "animation",
     "carousel",
