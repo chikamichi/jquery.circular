@@ -1,6 +1,6 @@
 {
   "name": "jquery.circular",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "jquery.circular.js",
   "repository": "https://github.com/chikamichi/jquery.circular",
   "ignore": [
